@@ -134,4 +134,8 @@ fi
 export RUSTC_WRAPPER=$(which sccache)
 echo RUSTC_WRAPPER
 # sccache オンオフ切替シェルスクリプトのパス 
-export PATH=$PATH:/home/hariboteereg/shell_script/
+# export PATH=$PATH:/home/hariboteereg/shell_script/
+
+# OPENSSLを使うためのパス設定
+# OPENSSL_DIRを設定する
+export OPENSSL_DIR="/usr/lib/ssl"
