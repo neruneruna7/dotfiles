@@ -1,5 +1,5 @@
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
+# curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# source $HOME/.cargo/env
 
 # binstall
 # バイナリをインストールして，インストールを高速化する
@@ -24,3 +24,5 @@ cargo binstall cargo-update
 cargo binstall cargo-trend
 # 依存関係を Lint する
 cargo binstall cargo-deny
+# 共有ビルドキャッシュ
+cargo binstall sccache
