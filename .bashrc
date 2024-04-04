@@ -25,10 +25,6 @@ export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 
 
-# oh-my-posh用の設定
-eval "$(oh-my-posh init bash --config /mnt/c/Users/harib/AppData/Local/Programs/oh-my-posh/themes/paradox.omp.json)"
-
-
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -136,6 +132,8 @@ echo RUSTC_WRAPPER
 # sccache オンオフ切替シェルスクリプトのパス 
 # export PATH=$PATH:/home/hariboteereg/shell_script/
 
-# OPENSSLを使うためのパス設定
-# OPENSSL_DIRを設定する
-export OPENSSL_DIR="/usr/lib/ssl"
+# # oh-my-posh用の設定
+# eval "$(oh-my-posh init bash --config /mnt/c/Users/harib/AppData/Local/Programs/oh-my-posh/themes/paradox.omp.json)"
+
+# starship用の設定
+eval "$(starship init bash)"
