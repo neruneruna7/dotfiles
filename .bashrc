@@ -132,8 +132,23 @@ echo RUSTC_WRAPPER
 # sccache オンオフ切替シェルスクリプトのパス 
 # export PATH=$PATH:/home/hariboteereg/shell_script/
 
+# ls の代替コマンド，ezaの設定
+alias ei="eza --icons --git"
+alias ea="eza -a --icons --git"
+alias ee="eza -aahl --icons --git"
+alias et="eza -T -L 3 -a -I 'node_modules|.git|.cache' --icons"
+alias eta="eza -T -a -I 'node_modules|.git|.cache' --color=always --icons | less -r"
+alias ls=ei
+alias la=ea
+alias ll=ee
+alias lt=et
+alias lta=eta
+# alias l="clear && ls"
+
 # # oh-my-posh用の設定
 # eval "$(oh-my-posh init bash --config /mnt/c/Users/harib/AppData/Local/Programs/oh-my-posh/themes/paradox.omp.json)"
 
 # starship用の設定
+export STARSHIP_CONFIG=~/dotfiles/asset/starship.toml
 eval "$(starship init bash)"
+
