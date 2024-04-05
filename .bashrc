@@ -145,6 +145,14 @@ alias lt=et
 alias lta=eta
 # alias l="clear && ls"
 
+# fzfの設定
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --bash)"
+
+# zoxideの設定
+eval "$(zoxide init bash)"
+
+
 # # oh-my-posh用の設定
 # eval "$(oh-my-posh init bash --config /mnt/c/Users/harib/AppData/Local/Programs/oh-my-posh/themes/paradox.omp.json)"
 
@@ -152,3 +160,5 @@ alias lta=eta
 export STARSHIP_CONFIG=~/dotfiles/asset/starship.toml
 eval "$(starship init bash)"
 
+# homebrewのパスを通す
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
