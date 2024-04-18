@@ -145,12 +145,6 @@ alias lt=et
 alias lta=eta
 # alias l="clear && ls"
 
-# fzfの設定
-# Set up fzf key bindings and fuzzy completion
-eval "$(fzf --bash)"
-
-# zoxideの設定
-eval "$(zoxide init bash)"
 
 
 # # oh-my-posh用の設定
@@ -162,3 +156,10 @@ eval "$(starship init bash)"
 
 # homebrewのパスを通す
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+# fzfの設定
+# Set up fzf key bindings and fuzzy completion
+eval "$(fzf --bash)"
+
+# zoxideの設定
+eval "$(zoxide init bash)"
