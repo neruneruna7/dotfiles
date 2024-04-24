@@ -10,5 +10,6 @@ brew install fzf
 brew install navi
 
 # zoxideのインストール
-curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+# curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+cargo binstall zoxide --locked
 
