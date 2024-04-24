@@ -23,3 +23,5 @@ cargo binstall cargo-trend
 cargo binstall cargo-deny
 # 共有ビルドキャッシュ
 cargo binstall sccache
+# 高級ls
+cargo binstall eza
