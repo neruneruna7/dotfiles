@@ -1,6 +1,4 @@
 # binstall
-# バイナリをインストールして，インストールを高速化する
-cargo install cargo-binstall
 # ~/.cargo/以下から不要なファイルを削除する
 cargo binstall cargo-cache
 # 再帰的にtargetディレクトリを削除する
