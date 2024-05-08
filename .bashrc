@@ -163,3 +163,6 @@ eval "$(fzf --bash)"
 
 # zoxideの設定
 eval "$(zoxide init bash)"
+
+# mcflyの設定
+eval "$(mcfly init bash)"
