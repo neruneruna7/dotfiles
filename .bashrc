@@ -166,3 +166,4 @@ eval "$(zoxide init bash)"
 
 # mcflyの設定
 eval "$(mcfly init bash)"
+
