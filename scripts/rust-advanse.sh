@@ -21,8 +21,5 @@ cargo binstall cargo-trend
 cargo binstall cargo-deny
 # 共有ビルドキャッシュ
 cargo binstall sccache
-<<<<<<< HEAD
-=======
 # マクロを展開する
 cargo binstall cargo-expand
->>>>>>> d8e370a (update)

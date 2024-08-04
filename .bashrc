@@ -167,3 +167,8 @@ eval "$(zoxide init bash)"
 # mcflyの設定
 eval "$(mcfly init bash)"
 
+# gituiのエイリアス設定
+alias gu=gitui
+
+# firedbgのエイリアス設定
+alias fd=firedbg
