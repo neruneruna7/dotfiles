@@ -172,3 +172,6 @@ alias gu=gitui
 
 # firedbgのエイリアス設定
 alias fd=firedbg
+
+# direnvの設定
+eval "$(direnv hook bash)"
