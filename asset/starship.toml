@@ -15,16 +15,16 @@ format = """
 [$username](bg:color_bg0 fg:color_fg0)\
 [](bg:color_bg1 fg:#a3aed2)\
 $directory\
-[](fg:color_bg1 bg:#394260)\
+[](bg:#394260 fg:color_bg1)\
 $git_branch\
 $git_status\
-[](fg:#394260 bg:#212736)\
+[](bg:#212736 fg:#394260)\
 $package\
 $nodejs\
 $rust\
 $golang\
 $php\
-[](fg:#212736 bg:#1d2230)\
+[](bg:#1d2230 fg:#212736 )\
 $time\
 $cmd_duration\
 [ ](fg:#1d2230)\
@@ -42,13 +42,31 @@ color_fg2 = '#a89984'
 color_bg0 = '#a3aed2'
 color_bg1 = '#769ff0'
 color_bg3 = '#665c54'
-color_blue = '#458588'
+# color_fg0 = '#090c0c'
+# color_fg1 = '#fbf1c7'
+# color_fg2 = '#a89984'
+# color_bg0 = '#a3aed2'
+# color_bg1 = '#769ff0'
+# color_bg3 = '#665c54'
+
+color_bar1 = '#bfE4ff' # 明るい空色
+color_bar2 = '#4dc4ff' # 空色
+color_bar3 = '#005aff' # 青色
+color_bar4 = '#0018ff' # 濃い青色
+# color_blue = '#458588'
+# color_aqua = '#689d6a'
+# color_green = '#98971a'
+# color_orange = '#d65d0e'
+# color_purple = '#b16286'
+# color_red = '#cc241d'
+# color_yellow = '#d79921'
+color_blue = '#1971ff'
 color_aqua = '#689d6a'
-color_green = '#98971a'
+color_green = '#00b06b'
 color_orange = '#d65d0e'
-color_purple = '#b16286'
-color_red = '#cc241d'
-color_yellow = '#d79921'
+color_purple = '#990099'
+color_red = '#ff4b00'
+color_yellow = '#f2e700'
 
 # シンボル設定
 [character]
@@ -85,7 +103,7 @@ disabled = false
 style = "bg:color_bg0 fg:color_fg1"
 format = "[ $indicator ]($style)"
 bash_indicator = "🦴"
-nu_indicator = "》"
+nu_indicator = "》》"
 
 [username]
 show_always = true
