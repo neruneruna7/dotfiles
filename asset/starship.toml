@@ -11,6 +11,7 @@ scan_timeout = 10
 format = """
 [](color_bg0)\
 [$os](bg:color_bg0 fg:color_fg0)\
+[$shell](bg:color_bg0 fg:color_fg0)\
 [$username](bg:color_bg0 fg:color_fg0)\
 [](bg:color_bg1 fg:#a3aed2)\
 $directory\
@@ -54,7 +55,6 @@ color_yellow = '#d79921'
 success_symbol = "[▶](bold green)"  # コマンド成功時
 error_symbol   = "[](color_yellow)[▶](bg:color_yellow fg:bold red)[](color_yellow)"    # コマンド失敗時
 
-
 [os]
 disabled = false
 style = "bg:color_bg0 fg:color_fg0"
@@ -80,10 +80,17 @@ Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
 
+[shell]
+disabled = false
+style = "bg:color_bg0 fg:color_fg1"
+format = "[ $indicator ]($style)"
+bash_indicator = "🦴"
+nu_indicator = "》"
+
 [username]
 show_always = true
 style_user = "bg:color_bg0 fg:color_fg0"
-style_root = "bg:color_orange fg:color_fg1"
+style_root = "bg:color_orange fg:color_fg0"
 format = '[ $user ]($style)'
 
 [directory]

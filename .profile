@@ -36,3 +36,5 @@ if [ $SHLVL = 1 ] ; then
   xset -r 49  > /dev/null 2>&1
 fi
 #Added by bash script: end
+
+. "$HOME/.local/bin/env"

@@ -175,3 +175,15 @@ alias fd=firedbg
 
 # direnvの設定
 eval "$(direnv hook bash)"
+
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+
+# rbenvの設定
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+# uvの設定
+. "$HOME/.local/bin/env"
+eval "$(uv generate-shell-completion bash)"
+export PATH=/home/harib/.tiup/bin:$PATH
+
