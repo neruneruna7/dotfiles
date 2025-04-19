@@ -108,3 +108,6 @@ starship init nu | save -f ~/.cache/starship/init.nu
 zoxide init nushell | save -f ~/.zoxide.nu
 
 $env.PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig"
+
+# carapaceの設定
+$env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional

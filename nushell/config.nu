@@ -906,5 +906,8 @@ use ~/.cache/starship/init.nu
 # zoxideの設定
 source ~/.zoxide.nu
 
-# pkg config
+# atuinの設定
+source ~/.local/share/atuin/init.nu
 
+# carapaseの設定
+source ~/.cache/carapace/init.nu
