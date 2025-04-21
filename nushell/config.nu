@@ -911,3 +911,6 @@ source ~/.local/share/atuin/init.nu
 
 # carapaseの設定
 source ~/.cache/carapace/init.nu
+
+# シークレットモード
+alias snu = with-env { INCOGNITO: ""} { nu --no-history }
