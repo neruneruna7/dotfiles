@@ -1,3 +1,4 @@
+"$schema" = 'https://starship.rs/config-schema.json'
 
 # 空行追加
 add_newline = true
