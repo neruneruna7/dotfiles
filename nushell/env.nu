@@ -107,7 +107,8 @@ starship init nu | save -f ~/.cache/starship/init.nu
 # zoxideの設定
 zoxide init nushell | save -f ~/.zoxide.nu
 
-$env.PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig"
+# aptのパス：homebrewのパス
+$env.PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig:/home/linuxbrew/.linuxbrew/share/pkgconfig"
 
 # carapaceの設定
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
