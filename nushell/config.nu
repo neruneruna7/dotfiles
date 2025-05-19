@@ -912,5 +912,14 @@ source ~/.local/share/atuin/init.nu
 # carapaseの設定
 source ~/.cache/carapace/init.nu
 
-# シークレットモード
-alias snu = with-env { INCOGNITO: ""} { nu --no-history }
+# 履歴を残さないモードで起動，解除するための設定
+# シークレットモード（履歴を残さない）で起動
+alias snu = do {
+    $env.NO_HISTORY_SHELL = 1
+    ^nu --no-history
+}
+# シークレット解除（履歴を残す）で起動
+alias nu = do {
+    $env.NO_HISTORY_SHELL = 0
+    ^nu
+}

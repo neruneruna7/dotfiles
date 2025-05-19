@@ -185,5 +185,9 @@ eval "$(rbenv init -)"
 # uvの設定
 . "$HOME/.local/bin/env"
 eval "$(uv generate-shell-completion bash)"
+
+# tiDBのパスを通す
 export PATH=/home/harib/.tiup/bin:$PATH
 
+# surrealdbのパスを通す
+export PATH=/home/harib/.surrealdb:$PATH

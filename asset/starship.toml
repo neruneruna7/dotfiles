@@ -31,6 +31,7 @@ $cmd_duration\
 [ ](fg:#1d2230)\
 $sudo\
 $memory_usage\
+${custom.no_history_shell}\
 \n$character"""
 
 
@@ -175,3 +176,13 @@ disabled = false
 [memory_usage]
 symbol = "▪▫▪ "
 format = " mem [${ram}( ${swap})]($style)"
+
+[custom.no_history_shell]
+# when = 'test "$INCOGNITO_SHELL" = 1'
+# おそらく，現在のシェルによってこのwhen部分が変わる
+# nushellに合わせている
+when = "test $env.NO_HISTORY_SHELL == 1"
+description = "シェルの隠匿モード（履歴を保存しない）が有効な場合に表示"
+symbol = "NO_HISTORY"
+style = "bg:#212736"
+format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'

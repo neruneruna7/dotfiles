@@ -112,3 +112,14 @@ $env.PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig:/home/linuxbrew/.lin
 
 # carapaceの設定
 $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
+
+# 仮想ディスプレイの設定
+$env.DISPLAY = ":0"
+
+# GPUを使わずにソフトウェアレンダリングを使用する
+$env.LIBGL_ALWAYS_SOFTWARE = "1"
+
+# tauriでAndroidビルドするための設定
+#$env.JAVA_HOME = "~/workspace/install/android-studio/android-studio/jbr"
+#$env.ANDROID_HOME = ($env.HOME | path join "Android" "Sdk")
+#$env.NDK_HOME = ($env.ANDROID_HOME | path join "ndk" (ls ($env.ANDROID_HOME | path join "ndk") | get name | sort | last))
