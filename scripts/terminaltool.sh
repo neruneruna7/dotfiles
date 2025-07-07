@@ -5,3 +5,6 @@ cargo binstall zoxide --locked
 
 # 高級ls
 cargo binstall eza
+
+# nushell
+cargo binstall nu --locked
