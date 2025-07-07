@@ -1,5 +1,5 @@
 sudo apt update
-sudo apt upgrade
+sudo apt upgrade -y
 
 sudo apt install build-essential
 sudo apt install curl
