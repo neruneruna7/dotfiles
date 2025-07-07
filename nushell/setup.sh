@@ -8,6 +8,5 @@ ln -sf ~/dotfiles/nushell/env.nu ~/.config/nushell/env.nu
 # ...existing code...
 
 # atuinの設定
-mkdir ~/.local/share/atuin/
-atuin init nu | save ~/.local/share/atuin/init.nu
-
+mkdir -p  ~/.local/share/atuin/
+nu atuin init nu | save ~/.local/share/atuin/init.nu
