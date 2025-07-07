@@ -1,0 +1,2 @@
+# naviのインストール
+brew install navi
