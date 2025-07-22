@@ -1,0 +1,1 @@
+mklink ../config/wezterm.lua ~/wezterm.lua
