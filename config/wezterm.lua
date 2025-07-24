@@ -246,11 +246,11 @@ config.keys = {
     { key = 'W', mods = 'SHIFT|CTRL', action = act.CloseCurrentTab{ confirm = true } },
     { key = 'w', mods = 'SHIFT|CTRL', action = act.CloseCurrentTab{ confirm = true } },
     -- アクティブなタブを移動する
-    { key = 'LeftArrow', mods = 'SHIFT|CTRL', action = act.ActivateTabRelative(-1) },
-    { key = 'RightArrow', mods = 'SHIFT|CTRL', action = act.ActivateTabRelative(1) },
+    { key = 'LeftArrow', mods = 'ALT', action = act.ActivateTabRelative(-1) },
+    { key = 'RightArrow', mods = 'ALT', action = act.ActivateTabRelative(1) },
     -- タブの位置を移動する
-    { key = 'LeftArrow', mods = 'ALT', action = act.MoveTabRelative(-1) },
-    { key = 'RightArrow', mods = 'ALT', action = act.MoveTabRelative(1) },
+    { key = 'LeftArrow', mods = 'CTRL|SHIFT', action = act.MoveTabRelative(-1) },
+    { key = 'RightArrow', mods = 'CTRL|SHIFT', action = act.MoveTabRelative(1) },
     -- 絶対タブ位置の移動操作はなし コメントにして痕跡だけ残す
     -- { key = '!', mods = 'CTRL', action = act.ActivateTab(0) },
     -- { key = '!', mods = 'SHIFT|CTRL', action = act.ActivateTab(0) },
@@ -297,10 +297,10 @@ config.keys = {
     { key = 'RightArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Right' },
     { key = 'UpArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Up' },
     { key = 'DownArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Down' },
-    { key = 'LeftArrow', mods = 'CTRL|ALT', action = act.ActivatePaneDirection 'Left' },
-    { key = 'RightArrow', mods = 'CTRL|ALT', action = act.ActivatePaneDirection 'Right' },
-    { key = 'UpArrow', mods = 'CTRL|ALT', action = act.ActivatePaneDirection 'Up' },
-    { key = 'DownArrow', mods = 'CTRL|ALT', action = act.ActivatePaneDirection 'Down' },
+    { key = 'LeftArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Left' },
+    { key = 'RightArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Right' },
+    { key = 'UpArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Up' },
+    { key = 'DownArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Down' },
 
     -- ペインの大きさを操作 LEADER押しっぱができないのは残念
     -- { key = 'UpArrow', mods = 'LEADER', action = act.AdjustPaneSize{ 'Up', 1 } },
