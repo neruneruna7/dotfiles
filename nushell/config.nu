@@ -901,7 +901,8 @@ $env.config = {
 }
 
 # starshipの設定
-use ~/.cache/starship/init.nu
+mkdir ($nu.data-dir | path join "vendor/autoload")
+starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 
 # zoxideの設定
 source ~/.zoxide.nu
