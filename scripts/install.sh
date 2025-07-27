@@ -29,6 +29,10 @@ link_to_homedir() {
     for f in $dotdir/.??*; do
       # .gitは除外します。
       [[ `basename $f` == ".git" ]] && continue
+      # .DS_Storeは除外します。
+      [[ `basename $f` == ".DS_Store" ]] && continue
+      # .githubは除外します。
+      [[ `basename $f` == ".github" ]] && continue
       # 既存のリンクがある場合、削除します。
       if [[ -L "$HOME/`basename $f`" ]];then
         command rm -f "$HOME/`basename $f`"
