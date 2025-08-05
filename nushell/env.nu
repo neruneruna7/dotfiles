@@ -1,6 +1,8 @@
 # Nushell Environment Config File
 #
 # version = "0.98.0"
+$env.dothome = $nu.home-path | path join "dotfiles"
+
 
 def create_left_prompt [] {
     let dir = match (do --ignore-errors { $env.PWD | path relative-to $nu.home-path }) {
@@ -99,11 +101,6 @@ $env.NU_PLUGIN_DIRS = [
 
 # To load from a custom file you can use:
 # source ($nu.default-config-dir | path join 'custom.nu')
-
-# starshipの設定
-mkdir ~/.cache/starship
-starship init nu | save -f ~/.cache/starship/init.nu
-$env.STARSHIP_CONFIG = "~/dotfiles/asset/starship.toml"
 
 # zoxideの設定
 zoxide init nushell | save -f ~/.zoxide.nu
