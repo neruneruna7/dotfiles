@@ -38,3 +38,5 @@ fi
 #Added by bash script: end
 
 . "$HOME/.local/bin/env"
+
+. "$HOME/.atuin/bin/env"

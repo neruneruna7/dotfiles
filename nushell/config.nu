@@ -924,3 +924,4 @@ alias nu = do {
     $env.NO_HISTORY_SHELL = 0
     ^nu
 }
+source $"($nu.home-path)/.cargo/env.nu"

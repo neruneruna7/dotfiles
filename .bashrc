@@ -191,3 +191,8 @@ export PATH=/home/harib/.tiup/bin:$PATH
 
 # surrealdbのパスを通す
 export PATH=/home/harib/.surrealdb:$PATH
+
+. "$HOME/.atuin/bin/env"
+
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+eval "$(atuin init bash)"
