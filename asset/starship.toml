@@ -70,6 +70,36 @@ color_purple = '#990099'
 color_red = '#ff4b00'
 color_yellow = '#f2e700'
 
+# JIS安全色に則った色設定
+[palettes.jis_safe_colors]
+jis_red = '#ff4b00'
+jis_orange = '#f6aa00'
+jis_yellow = '#f2e700'
+jis_green = '#00b06b'
+jis_blue = '#1971ff'
+jis_purple = '#990099'
+
+# カラーユニバーサルデザインに則った色設定
+[palettes.cud_colors]
+cud_red = '#ff4b00'
+cud_yellow = '#f2e700'
+cud_green = '#00b06b'
+cud_blue = '#1971ff'
+cud_sky = '#4dc4ff'
+cud_pink = '#ff8078'
+cud_orange = '#f6aa00'
+cud_purple = '#990099'
+cud_brown = '#804000'
+cud_light_pink = '#ffcabf'
+cud_cream = '#ffff80'
+cud_lignt_yellow_green = '#d8f255'
+cud_light_sky = '#b4e4ff'
+cud_beige ='#ffca80'
+cud_light_green = '#77d9a8'
+cud_light_purple  = '#c9ace6'
+cud_light_gray = '#c8c8cb'
+cud_gray = '#84919e'
+
 # シンボル設定
 [character]
 success_symbol = "[▶](bold green)"  # コマンド成功時
