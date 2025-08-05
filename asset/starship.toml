@@ -8,67 +8,32 @@ scan_timeout = 10
 
 
 
-## tokyo nightプリセットより
 format = """
-[](color_bg0)\
-[$os](bg:color_bg0 fg:color_fg0)\
-[$shell](bg:color_bg0 fg:color_fg0)\
-[$username](bg:color_bg0 fg:color_fg0)\
-[](bg:color_bg1 fg:#a3aed2)\
+$os\
+$shell\
+$sudo\
+$username\
 $directory\
-[](bg:#394260 fg:color_bg1)\
 $git_branch\
 $git_status\
-[](bg:#212736 fg:#394260)\
-$package\
+$fill\
+\n$character
+"""
+
+right_format = """
 $nodejs\
 $rust\
 $golang\
 $php\
-[](bg:#1d2230 fg:#212736 )\
 $time\
 $cmd_duration\
-[ ](fg:#1d2230)\
-$sudo\
-$memory_usage\
-${custom.no_history_shell}\
-\n$character"""
+"""
+
+# $package\
 
 
-palette = 'gruvbox_dark'
+palette = 'nier_colors'
 
-[palettes.gruvbox_dark]
-color_fg0 = '#090c0c'
-color_fg1 = '#fbf1c7'
-color_fg2 = '#a89984'
-color_bg0 = '#a3aed2'
-color_bg1 = '#769ff0'
-color_bg3 = '#665c54'
-# color_fg0 = '#090c0c'
-# color_fg1 = '#fbf1c7'
-# color_fg2 = '#a89984'
-# color_bg0 = '#a3aed2'
-# color_bg1 = '#769ff0'
-# color_bg3 = '#665c54'
-
-color_bar1 = '#bfE4ff' # 明るい空色
-color_bar2 = '#4dc4ff' # 空色
-color_bar3 = '#005aff' # 青色
-color_bar4 = '#0018ff' # 濃い青色
-# color_blue = '#458588'
-# color_aqua = '#689d6a'
-# color_green = '#98971a'
-# color_orange = '#d65d0e'
-# color_purple = '#b16286'
-# color_red = '#cc241d'
-# color_yellow = '#d79921'
-color_blue = '#1971ff'
-color_aqua = '#689d6a'
-color_green = '#00b06b'
-color_orange = '#d65d0e'
-color_purple = '#990099'
-color_red = '#ff4b00'
-color_yellow = '#f2e700'
 
 # JIS安全色に則った色設定
 [palettes.jis_safe_colors]
@@ -106,16 +71,27 @@ nier_beige_dark = '#4e4b42'
 nier_beige_semi_dark = '#635f54'
 nier_beige_light = '#dad4bb'
 nier_beige_semi_light = '#b4af9a'
+jis_red = '#ff4b00'
+jis_orange = '#f6aa00'
+jis_yellow = '#f2e700'
+
 
 
 # シンボル設定
 [character]
-success_symbol = "[▶](bold green)"  # コマンド成功時
-error_symbol   = "[](color_yellow)[▶](bg:color_yellow fg:bold red)[](color_yellow)"    # コマンド失敗時
+success_symbol = "[❯](bold nier_beige_semi_light)[❯](bold nier_beige_semi_dark)[❯](bold nier_beige_dark)"
+error_symbol = "[❯](bold jis_red)[❯](bold jis_orange)[❯](bold jis_yellow)"
+# success_symbol = "[❯](bold jis_red)[❯](bold jis_orange)[❯](bold jis_yellow)"
 
 [os]
 disabled = false
-style = "bg:color_bg0 fg:color_fg0"
+format = """
+[](fg:nier_beige_light)\
+[ $symbol ]($style)\
+[](fg:nier_beige_light)\
+"""
+style = "bg:nier_beige_light fg:nier_beige_dark"
+
 
 [os.symbols]
 Windows = "󰍲"
@@ -140,20 +116,52 @@ RedHatEnterprise = "󱄛"
 
 [shell]
 disabled = false
-style = "bg:color_bg0 fg:color_fg1"
-format = "[ $indicator ]($style)"
+style = "bg:nier_beige_light fg:nier_beige_dark"
+format = """
+[](fg:nier_beige_light)\
+[ $indicator]($style)\
+[](fg:nier_beige_light)\
+"""
 bash_indicator = "🦴"
-nu_indicator = "》》"
+nu_indicator = "》"
 
 [username]
 show_always = true
-style_user = "bg:color_bg0 fg:color_fg0"
-style_root = "bg:color_orange fg:color_fg0"
-format = '[ $user ]($style)'
+style_user = "bg:nier_beige_light fg:nier_beige_dark"
+style_root = "bg:palettes.jis_safe_colors.jis_red fg:nier_beige_light"
+format = """
+[](fg:nier_beige_light)\
+[ $user ]($style)\
+[](fg:nier_beige_light)\
+"""
+
+
+[sudo]
+format = """
+[](fg:jis_red)\
+[$symbol]($style)\
+[](fg:jis_red)\
+"""
+style = "bg:jis_red fg:nier_beige_light"
+symbol = "󰿆 sudo"
+disabled = false
+
 
 [directory]
-style = "fg:#e3e5e5 bg:#769ff0"
-format = "[ $path ]($style)"
+# style = "bg:nier_beige_dark fg:nier_beige_light"
+# format = """
+# [](fg:nier_beige_dark)\
+# [ $path ]($style)\
+# [](fg:nier_beige_dark)\
+# """
+style = "bg:nier_beige_semi_dark fg:nier_beige_light"
+format = """
+[](fg:nier_beige_semi_dark)\
+[ $path ]($style)\
+[](fg:nier_beige_semi_dark)\
+"""
+
+
 truncation_length = 3
 truncation_symbol = "…/"
 
@@ -165,55 +173,85 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+style = "bg:nier_beige_dark fg:nier_beige_light"
+format = """
+[](fg:nier_beige_dark)\
+[$symbol $branch]($style)\
+[](fg:nier_beige_dark)\
+"""
 
 [git_status]
-style = "bg:#394260"
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+style = "bg:nier_beige_dark fg:nier_beige_light"
+format = """
+[](fg:nier_beige_dark)\
+[$all_status$ahead_behind]($style)\
+[](fg:nier_beige_dark)\
+"""
 
-[package]
-format = "via [🎁 $version](208 bold) "
+
+# [package]
+# format = "via [🎁 $version](208 bold) "
 
 [nodejs]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:nier_beige_semi_dark fg:nier_beige_semi_light"
+format = """
+[](fg:nier_beige_semi_dark)\
+[$symbol ($version)]($style)\
+[](fg:nier_beige_semi_dark)\
+"""
 
 [rust]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:nier_beige_semi_dark fg:nier_beige_semi_light"
+format = """
+[](fg:nier_beige_semi_dark)\
+[$symbol ($version)]($style)\
+[](fg:nier_beige_semi_dark)\
+"""
 
 [golang]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:nier_beige_semi_dark fg:nier_beige_semi_light"
+format = """
+[](fg:nier_beige_semi_dark)\
+[$symbol ($version)]($style)\
+[](fg:nier_beige_semi_dark)\
+"""
 
 [php]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:nier_beige_semi_dark fg:nier_beige_semi_light"
+format = """
+[](fg:nier_beige_semi_dark)\
+[$symbol ($version)]($style)\
+[](fg:nier_beige_semi_dark)\
+"""
 
 [time]
 disabled = false
 time_format = "%R" # Hour:Minute Format
-style = "bg:#1d2230"
-format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
+style = "bg:nier_beige_semi_dark fg:nier_beige_semi_light"
+format = """
+[](fg:nier_beige_semi_dark)\
+[$time]($style)\
+[](fg:nier_beige_semi_dark)\
+"""
+
 
 [cmd_duration]
 min_time = 500
-format = '[$duration](italic bg:#1d2230 bold yellow)'
+style = "bg:nier_beige_semi_dark fg:nier_beige_semi_light"
+format = """
+[](fg:nier_beige_semi_dark)\
+[$duration]($style)\
+[](fg:nier_beige_semi_dark)\
+"""
 
-[sudo]
-format = "[$symbol]($style)"
-style = "italic bright-purple"
-symbol = "🔓"
-disabled = false
+[fill]
+style = "bg:none fg:nier_beige_semi_light"
+symbol = "―"
 
-[memory_usage]
-symbol = "▪▫▪ "
-format = " mem [${ram}( ${swap})]($style)"
 
 [custom.no_history_shell]
 # when = 'test "$INCOGNITO_SHELL" = 1'
