@@ -69,6 +69,16 @@ local MyColor = {
     termiusTabInactive = "#2c2f42",
     gray = "#9a9eab",
 }
+
+-- Nier:AutomataのUIをイメージした色
+local NierColor = {
+    nier_beige_dark = '#4e4b42',
+    nier_beige_semi_dark = '#635f54',
+    nier_beige_light = '#dad4bb',
+    nier_beige_semi_light = '#b4af9a',
+}
+
+
 config.colors = {
     -- 文字色
     foreground = JisColor.green,
@@ -80,19 +90,18 @@ config.colors = {
     split = JisColor.white,
     -- スクロールバーのつまみの色
     scrollbar_thumb = JisColor.white,
-    
 }
 
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
     -- タブの色
     -- 通常
-    local background = MyColor.termiusTabInactive
-    local foreground = MyColor.gray
+    local background = NierColor.nier_beige_semi_light
+    local foreground = NierColor.nier_beige_dark
     -- アクティブなタブ
     if tab.is_active then
-        background = MyColor.termiusTabActive
-        foreground = JisColor.green
+        background = NierColor.nier_beige_dark
+        foreground = NierColor.nier_beige_light
     end
 
     local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
@@ -125,8 +134,8 @@ end)
 
 -- ステータスを表示
 -- LEADERキーを押したかどうか
-local DEFAULT_FG = { Color = '#9a9eab' }
-local DEFAULT_BG = { Color = '#1e1e1e' }
+local DEFAULT_FG = { Color = NierColor.nier_beige_dark }
+local DEFAULT_BG = { Color = NierColor.nier_beige_light }
 
 local SPACE_1 = ' '
 local SPACE_3 = '   '
@@ -166,14 +175,22 @@ end)
 
 -- リモート接続
 config.ssh_domains = {
-    {
-        name = 'VPS_VPN',
-        remote_address = 'fd7a:115c:a1e0::3401:4d48',
-        username = 'harib',
+        {
+        name = 'mac-mini',
+        remote_address = 'mac-mini.tailb5c229.ts.net',
+        username = 'kino',
         ssh_option = {
             identityfile = "C:/Users/harib/.ssh/id_ed25519_xservervps",
         },
-    }
+    },
+    -- {
+    --     name = 'VPS_VPN',
+    --     remote_address = 'fd7a:115c:a1e0::3401:4d48',
+    --     username = 'harib',
+    --     ssh_option = {
+    --         identityfile = "C:/Users/harib/.ssh/id_ed25519_xservervps",
+    --     },
+    -- },
 }
 
 -- キーコンフィグ
