@@ -128,7 +128,7 @@ nu_indicator = "》"
 [username]
 show_always = true
 style_user = "bg:nier_beige_light fg:nier_beige_dark"
-style_root = "bg:palettes.jis_safe_colors.jis_red fg:nier_beige_light"
+style_root = "bg:jis_red fg:nier_beige_light"
 format = """
 [](fg:nier_beige_light)\
 [ $user ]($style)\
