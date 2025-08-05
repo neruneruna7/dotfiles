@@ -100,6 +100,14 @@ cud_light_purple  = '#c9ace6'
 cud_light_gray = '#c8c8cb'
 cud_gray = '#84919e'
 
+# ニーア・オートマタのUIデザインを参考にした色設定
+[palettes.nier_colors]
+nier_beige_dark = '#4e4b42'
+nier_beige_semi_dark = '#635f54'
+nier_beige_light = '#dad4bb'
+nier_beige_semi_light = '#b4af9a'
+
+
 # シンボル設定
 [character]
 success_symbol = "[▶](bold green)"  # コマンド成功時
