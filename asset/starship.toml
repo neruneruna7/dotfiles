@@ -16,6 +16,7 @@ $username\
 $directory\
 $git_branch\
 $git_status\
+$custom\
 $fill\
 \n$character
 """
@@ -260,5 +261,10 @@ symbol = "―"
 when = "test $env.NO_HISTORY_SHELL == 1"
 description = "シェルの隠匿モード（履歴を保存しない）が有効な場合に表示"
 symbol = "NO_HISTORY"
-style = "bg:#212736"
-format = '[[ $symbol ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:nier_beige_dark fg:nier_beige_light"
+format = """
+[](fg:nier_beige_dark)\
+[$symbol]($style)\
+[](fg:nier_beige_dark)\
+"""
+
