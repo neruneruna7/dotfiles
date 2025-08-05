@@ -101,8 +101,8 @@ $env.NU_PLUGIN_DIRS = [
 # source ($nu.default-config-dir | path join 'custom.nu')
 
 # starshipの設定
-# mkdir ~/.cache/starship
-# starship init nu | save -f ~/.cache/starship/init.nu
+mkdir ~/.cache/starship
+starship init nu | save -f ~/.cache/starship/init.nu
 $env.STARSHIP_CONFIG = "~/dotfiles/asset/starship.toml"
 
 # zoxideの設定
