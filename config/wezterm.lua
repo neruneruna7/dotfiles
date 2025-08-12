@@ -83,7 +83,7 @@ config.colors = {
     -- 文字色
     foreground = JisColor.green,
     -- 背景色
-    background = MyColor.termiusBack,
+    background = NierColor.nier_beige_dark,
     -- 選択中テキストの背景色
     -- selection_bg = MyColor.termiusSelectBack,
     -- ペイン分割時の境界色
@@ -96,12 +96,12 @@ config.colors = {
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
     -- タブの色
     -- 通常
-    local background = NierColor.nier_beige_semi_light
-    local foreground = NierColor.nier_beige_dark
+    local background = NierColor.nier_beige_dark
+    local foreground = NierColor.nier_beige_semi_light
     -- アクティブなタブ
     if tab.is_active then
-        background = NierColor.nier_beige_dark
-        foreground = NierColor.nier_beige_light
+        background = NierColor.nier_beige_semi_light
+        foreground = NierColor.nier_beige_dark
     end
 
     local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
