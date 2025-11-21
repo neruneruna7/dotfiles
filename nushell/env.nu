@@ -115,3 +115,7 @@ $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 #$env.JAVA_HOME = "~/workspace/install/android-studio/android-studio/jbr"
 #$env.ANDROID_HOME = ($env.HOME | path join "Android" "Sdk")
 #$env.NDK_HOME = ($env.ANDROID_HOME | path join "ndk" (ls ($env.ANDROID_HOME | path join "ndk") | get name | sort | last))
+
+
+use ~/dotfiles/nushell/completions/cargo-make-completions.nu *
+use ~/dotfiles/nushell/completions/git-completions.nu *

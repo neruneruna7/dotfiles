@@ -930,3 +930,5 @@ source $"($nu.home-path)/.cargo/env.nu"
 # starshipの設定
 mkdir ($nu.data-dir | path join "vendor/autoload")
 starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
+
+# source ~/dotfiles/nushell/completions/cargo-make-completions.nu

@@ -92,6 +92,7 @@ config.colors = {
     scrollbar_thumb = JisColor.white,
 }
 
+config.audible_bell = "SystemBeep"
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
     -- タブの色
