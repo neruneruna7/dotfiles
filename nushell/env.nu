@@ -1,7 +1,7 @@
 # Nushell Environment Config File
 #
 # version = "0.98.0"
-$env.dothome = $nu.home-path | path join "dotfiles"
+$env.dothome = $env.HOME | path join "dotfiles"
 
 
 def create_left_prompt [] {
@@ -119,3 +119,4 @@ $env.CARAPACE_BRIDGES = 'zsh,fish,bash,inshellisense' # optional
 
 use ~/dotfiles/nushell/completions/cargo-make-completions.nu *
 use ~/dotfiles/nushell/completions/git-completions.nu *
+use ~/dotfiles/nushell/completions/my-worklog.nu *

@@ -925,10 +925,172 @@ alias nu = do {
     $env.NO_HISTORY_SHELL = 0
     ^nu
 }
-source $"($nu.home-path)/.cargo/env.nu"
+
+source ~/.cargo/env.nu
 
 # starshipの設定
 mkdir ($nu.data-dir | path join "vendor/autoload")
 starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 
 # source ~/dotfiles/nushell/completions/cargo-make-completions.nu
+
+# config.nu に直接書くか、 source で読み込んでください
+module memo {
+    def get-base-dir [] {
+        "~/workspace/knowledge/typst_memo/daily" | path expand
+    }
+
+    def ensure-dir [] {
+        let dir = (get-base-dir)
+        if not ($dir | path exists) {
+            mkdir $dir
+        }
+    }
+
+    def get-files [] {
+        let dir = (get-base-dir)
+        try {
+            ls $dir 
+        } catch {
+            []
+        }
+    }
+
+    # 【追加】補完用の関数
+    # memo open <TAB> で呼び出され、ファイル名のリストを返します
+    def "nu-complete memo-files" [] {
+        get-files 
+        | get name 
+        | path basename
+    }
+
+    # 1. 'memo' 本体
+    export def main [ --typ (-t) ] {
+        ensure-dir
+        let dir = (get-base-dir)
+        let date_str = (date now | format date "%Y-%m-%d")
+        let ext = if $typ { "typ" } else { "md" }
+        let filename = $"($date_str).($ext)"
+        let full_path = ($dir | path join $filename)
+        ^hx $full_path
+    }
+
+    # 2. 'memo list'
+    export def list [] {
+        ensure-dir
+        let files = (get-files)
+
+        if ($files | is-empty) {
+            print "メモはまだありません。"
+            return
+        }
+        
+        $files
+        | sort-by modified -r
+        | select name modified size
+        | update name {|row| $row.name | path basename }
+    }
+
+    # 3. 'memo open'
+    # 【変更】引数に補完関数（@nu-complete memo-files）を紐付け
+    export def open [
+        target?: string@"nu-complete memo-files" 
+    ] {
+        ensure-dir
+        let dir = (get-base-dir)
+
+        let file_to_open = if ($target != null) {
+            $dir | path join $target
+        } else {
+            let files = (get-files)
+            if ($files | is-empty) {
+                print "開けるメモが見つかりません。"
+                return
+            }
+            let selected = (
+                $files
+                | sort-by modified -r
+                | get name 
+                | input list "開くファイルを選択してください:"
+            )
+            $selected
+        }
+
+        if ($file_to_open != null) {
+            ^hx $file_to_open
+        }
+    }
+}
+
+use memo
+# # コマンド名: memo
+# # 使用法: memo (mdファイル作成), memo -t (typファイル作成)
+# def memo [
+#     --typ (-t)   # .typファイルを作成する場合のフラグ（デフォルトは.md）
+# ] {
+#     # 1. 保存先のフォルダを指定します（環境に合わせて書き換えてください）
+#     let target_dir = "~/workspace/knowledge/typst_memo/daily" 
+
+#     # 2. 今日の日付を取得し、拡張子を決定します
+#     let date_str = (date now | format date "%Y-%m-%d")
+#     let ext = if $typ { "typ" } else { "md" }
+    
+#     # 3. フルパスを生成します
+#     # path expand はホームディレクトリ(~)を展開するために必要です
+#     let filename = $"($date_str).($ext)"
+#     let full_path = ($target_dir | path expand | path join $filename)
+
+#     # 4. ディレクトリが存在しない場合は作成します
+#     if not ($full_path | path dirname | path exists) {
+#         mkdir ($full_path | path dirname)
+#     }
+
+#     # 5. Neovimを起動します
+#     ^nvim $full_path
+# }
+
+
+# codexのプロファイル切り替え
+# 仕事用
+def codex-work [...rest] {
+    with-env { CODEX_HOME: $"($env.HOME)/.codex-work" } {
+        ^codex ...$rest
+    }
+}
+
+# 個人用
+def codex-personal [...rest] {
+    with-env { CODEX_HOME: $"($env.HOME)/.codex" } {
+        ^codex ...$rest
+    }
+}
+
+# codex 直叩き: メニューを出して選ばせる
+def codex [...rest] {
+    print "codex はプロファイルを選んで起動します。"
+    print "↑↓で選択して Enter。Esc でキャンセル。"
+    print ""
+
+    let options = [
+        { key: "work",     label: "仕事用 (CODEX_HOME=~/.codex-work)" }
+        { key: "personal", label: "個人用 (CODEX_HOME=~/.codex)" }
+    ]
+
+    # input list は「表示用フィールド」を指定できる
+    let chosen = (
+        $options
+        | input list --fuzzy --display label "どちらで起動しますか？"
+    )
+
+    # Esc などでキャンセルされた場合に備える（null になる環境がある）
+    if $chosen == null {
+        print "キャンセルしました。"
+        return
+    }
+
+    match $chosen.key {
+        "work"     => { codex-work ...$rest }
+        "personal" => { codex-personal ...$rest }
+        _          => { print "不明な選択です。"; return 1 }
+    }
+}

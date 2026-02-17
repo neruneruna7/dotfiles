@@ -1,0 +1,8 @@
+[keys.insert]
+# Escを押すと、以下の順で実行される:
+# 1. WezTermに "IME=OFF" という変数を設定するエスケープシーケンスを送信
+# 2. ノーマルモードに切り替え
+esc = [":sh printf '\\033]1337;SetUserVar=IME=OFF\\007' > /dev/tty", "normal_mode"]
+
+# Ctrl-[ (Ctrl + [) もEscとして使う場合の設定（お好みで）
+"C-[" = [":sh printf '\\033]1337;SetUserVar=IME=OFF\\007' > /dev/tty", "normal_mode"]
