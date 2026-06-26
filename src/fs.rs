@@ -1,6 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use crate::error::{DotfilesError, Result};
+use crate::link_spec::LinkKind;
 
 /// symlink を辿らずに判定したパスの状態である。
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -59,7 +60,7 @@ pub fn create_parent_dirs(path: &Path) -> Result<()> {
 
 #[cfg(unix)]
 /// Unix の symlink を作成する。
-pub fn create_symlink(source: &Path, target: &Path) -> Result<()> {
+pub fn create_symlink(source: &Path, target: &Path, _kind: LinkKind) -> Result<()> {
     std::os::unix::fs::symlink(source, target).map_err(|source| DotfilesError::Io {
         path: target.to_path_buf(),
         source,
@@ -67,9 +68,13 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<()> {
 }
 
 #[cfg(windows)]
-/// Windows のファイル symlink を作成する。
-pub fn create_symlink(source: &Path, target: &Path) -> Result<()> {
-    std::os::windows::fs::symlink_file(source, target).map_err(|source| DotfilesError::Io {
+/// Windows の symlink を作成する。
+pub fn create_symlink(source: &Path, target: &Path, kind: LinkKind) -> Result<()> {
+    let result = match kind {
+        LinkKind::File => std::os::windows::fs::symlink_file(source, target),
+        LinkKind::Directory => std::os::windows::fs::symlink_dir(source, target),
+    };
+    result.map_err(|source| DotfilesError::Io {
         path: target.to_path_buf(),
         source,
     })
@@ -78,8 +83,24 @@ pub fn create_symlink(source: &Path, target: &Path) -> Result<()> {
 /// symlink を削除する。
 ///
 /// 呼び出し側が削除対象を symlink に限定する責務を持つ。
+#[cfg(unix)]
 pub fn remove_symlink(path: &Path) -> Result<()> {
     std::fs::remove_file(path).map_err(|source| DotfilesError::Io {
+        path: path.to_path_buf(),
+        source,
+    })
+}
+
+/// symlink を削除する。
+///
+/// Windows ではディレクトリ symlink に `remove_dir` が必要になる。
+#[cfg(windows)]
+pub fn remove_symlink(path: &Path) -> Result<()> {
+    let result = match std::fs::metadata(path) {
+        Ok(metadata) if metadata.is_dir() => std::fs::remove_dir(path),
+        _ => std::fs::remove_file(path),
+    };
+    result.map_err(|source| DotfilesError::Io {
         path: path.to_path_buf(),
         source,
     })

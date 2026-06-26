@@ -17,9 +17,9 @@ version = 1
 #   target: ~/.config/helix/config.toml
 default_mapping = "mirror-home"
 
-# リンク対象の種別である。
-# 現在の MVP では "file" を主対象にする。
-# "directory" は型としては存在するが、ディレクトリリンク運用はまだ実装の主対象ではない。
+# デフォルト探索で使うリンク対象の種別である。
+# デフォルト探索は通常ファイルだけを対象にするため、現在は "file" を指定する。
+# ディレクトリ自体をリンクしたい場合は、下の [[links]] で kind = "directory" を明示する。
 link_kind = "file"
 
 # デフォルト探索から除外する glob パターンである。
@@ -39,6 +39,9 @@ ignore = [
   "*.swp",
   "*.tmp",
 
+  # ディレクトリリンクとして明示管理するため、配下ファイルのデフォルト探索は除外する。
+  ".codex/skills/**",
+
   # 既定除外を明示しておく。重複しても挙動は変わらない。
   ".git/**",
   "dotfiles.toml",
@@ -52,13 +55,26 @@ ignore = [
 # source は dotfiles root からの相対パスであり、絶対パスや .. は禁止である。
 # target は HOME からの相対パス、または絶対パスである。
 #
+[[links]]
+source = ".codex/skills"
+target = ".codex/skills"
+kind = "directory"
+
+[[links]]
+source = ".codex/skills"
+target = ".codex-work/skills"
+kind = "directory"
+
+#
 # [[links]]
 # source = ".config/git/config"
 # target = ".gitconfig"
+# kind = "file"
 #
 # [[links]]
-# source = ".config/special/app.toml"
-# target = ".config/app/config.toml"
+# source = ".config/helix"
+# target = ".config/helix"
+# kind = "directory"
 
 # 未実装または現在は意図的に持たない設定である。
 # 安全性を優先するため、上書きやバックアップは CLI 設計として未導入である。

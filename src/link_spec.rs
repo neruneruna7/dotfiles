@@ -1,9 +1,19 @@
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 
-use crate::config::{Config, LinkKind};
+use crate::config::Config;
 use crate::discover;
 use crate::error::{DotfilesError, Result};
+
+/// リンク対象の種別である。
+///
+/// デフォルト探索から生成される `LinkSpec` は常に `File` である。
+/// `Directory` は `dotfiles.toml` の `[[links]]` で明示された場合だけ使う。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum LinkKind {
+    File,
+    Directory,
+}
 
 /// 生成・検証済みのリンク仕様である。
 ///
@@ -13,6 +23,7 @@ use crate::error::{DotfilesError, Result};
 pub struct LinkSpec {
     pub source: PathBuf,
     pub target: PathBuf,
+    pub kind: LinkKind,
 }
 
 /// 設定とデフォルト探索結果を統合し、`LinkSpec` の集合を生成する。
@@ -27,15 +38,7 @@ pub fn generate_link_specs(
     let default_relative_sources = discover::discover_files(dotfiles_root, &config.policy.ignore)?;
     let default_specs = default_relative_sources
         .into_iter()
-        .map(|relative| {
-            make_spec(
-                dotfiles_root,
-                home,
-                &relative,
-                &relative,
-                config.policy.link_kind,
-            )
-        })
+        .map(|relative| make_spec(dotfiles_root, home, &relative, &relative, LinkKind::File))
         .collect::<Result<Vec<_>>>()?;
 
     let default_targets = default_specs
@@ -46,15 +49,7 @@ pub fn generate_link_specs(
     let explicit_specs = config
         .links
         .iter()
-        .map(|link| {
-            make_spec(
-                dotfiles_root,
-                home,
-                &link.source,
-                &link.target,
-                config.policy.link_kind,
-            )
-        })
+        .map(|link| make_spec(dotfiles_root, home, &link.source, &link.target, link.kind))
         .collect::<Result<Vec<_>>>()?;
 
     for spec in &explicit_specs {
@@ -80,8 +75,18 @@ fn make_spec(
     let source = dotfiles_root.join(relative_source);
     let metadata = std::fs::symlink_metadata(&source)
         .map_err(|_| DotfilesError::SourceMissing(source.clone()))?;
-    if link_kind == LinkKind::File && metadata.is_dir() {
-        return Err(DotfilesError::SourceIsDirectory(source));
+    let file_type = metadata.file_type();
+    if file_type.is_symlink() {
+        return Err(DotfilesError::SourceIsSymlink(source));
+    }
+    match link_kind {
+        LinkKind::File if !file_type.is_file() => {
+            return Err(DotfilesError::SourceIsDirectory(source));
+        }
+        LinkKind::Directory if !file_type.is_dir() => {
+            return Err(DotfilesError::SourceIsFile(source));
+        }
+        LinkKind::File | LinkKind::Directory => {}
     }
     let source = absolute_path(&source)?;
     let target = if target.is_absolute() {
@@ -89,7 +94,11 @@ fn make_spec(
     } else {
         home.join(target)
     };
-    Ok(LinkSpec { source, target })
+    Ok(LinkSpec {
+        source,
+        target,
+        kind: link_kind,
+    })
 }
 
 fn absolute_path(path: &Path) -> Result<PathBuf> {
@@ -114,7 +123,7 @@ fn reject_duplicate_targets(specs: &[LinkSpec]) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::{Config, ConfiguredLink, DefaultMapping, LinkKind, Policy};
+    use crate::config::{Config, ConfiguredLink, DefaultMapping, Policy};
     use std::fs;
     use tempfile::tempdir;
 
@@ -151,7 +160,8 @@ mod tests {
                     .join(".config/helix/config.toml")
                     .canonicalize()
                     .unwrap(),
-                target: home.join(".config/helix/config.toml")
+                target: home.join(".config/helix/config.toml"),
+                kind: LinkKind::File,
             }]
         );
     }
@@ -167,6 +177,7 @@ mod tests {
             &config(vec![ConfiguredLink {
                 source: PathBuf::from(".config/git/config"),
                 target: PathBuf::from(".gitconfig"),
+                kind: LinkKind::File,
             }]),
             &root,
             &home,
@@ -197,6 +208,84 @@ mod tests {
     }
 
     #[test]
+    fn explicit_directory_link_generates_directory_link_spec() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("dotfiles");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/helix")).unwrap();
+
+        let specs = generate_link_specs(
+            &config(vec![ConfiguredLink {
+                source: PathBuf::from(".config/helix"),
+                target: PathBuf::from(".config/helix"),
+                kind: LinkKind::Directory,
+            }]),
+            &root,
+            &home,
+        )
+        .unwrap();
+
+        assert_eq!(specs[0].kind, LinkKind::Directory);
+        assert_eq!(specs[0].target, home.join(".config/helix"));
+    }
+
+    #[test]
+    fn directory_link_kind_rejects_regular_file_source() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("dotfiles");
+        let home = temp.path().join("home");
+        touch(&root.join(".config/helix/config.toml"));
+
+        let err = generate_link_specs(
+            &config(vec![ConfiguredLink {
+                source: PathBuf::from(".config/helix/config.toml"),
+                target: PathBuf::from(".config/helix"),
+                kind: LinkKind::Directory,
+            }]),
+            &root,
+            &home,
+        )
+        .unwrap_err();
+
+        assert!(matches!(err, DotfilesError::SourceIsFile(_)));
+    }
+
+    #[test]
+    fn source_symlink_is_error() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("dotfiles");
+        let home = temp.path().join("home");
+        touch(&root.join(".real"));
+        crate::fs::create_symlink(&root.join(".real"), &root.join(".link"), LinkKind::File)
+            .unwrap();
+
+        let err = generate_link_specs(
+            &config(vec![ConfiguredLink {
+                source: PathBuf::from(".link"),
+                target: PathBuf::from(".link"),
+                kind: LinkKind::File,
+            }]),
+            &root,
+            &home,
+        )
+        .unwrap_err();
+
+        assert!(matches!(err, DotfilesError::SourceIsSymlink(_)));
+    }
+
+    #[test]
+    fn default_discovery_never_generates_directory_link_spec() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("dotfiles");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/helix")).unwrap();
+
+        let specs = generate_link_specs(&config(Vec::new()), &root, &home).unwrap();
+
+        assert!(specs.is_empty());
+    }
+
+    #[test]
     fn explicit_link_conflicting_with_default_target_is_error() {
         let temp = tempdir().unwrap();
         let root = temp.path().join("dotfiles");
@@ -208,6 +297,7 @@ mod tests {
             &config(vec![ConfiguredLink {
                 source: PathBuf::from(".config/git/config"),
                 target: PathBuf::from(".gitconfig"),
+                kind: LinkKind::File,
             }]),
             &root,
             &home,
@@ -228,6 +318,7 @@ mod tests {
             &config(vec![ConfiguredLink {
                 source: PathBuf::from(".missing"),
                 target: PathBuf::from(".target"),
+                kind: LinkKind::File,
             }]),
             &root,
             &home,
@@ -248,6 +339,7 @@ mod tests {
             &config(vec![ConfiguredLink {
                 source: PathBuf::from(".config/app"),
                 target: PathBuf::from(".config/app"),
+                kind: LinkKind::File,
             }]),
             &root,
             &home,

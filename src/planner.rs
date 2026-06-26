@@ -227,6 +227,7 @@ fn display_path(path: &Path, home: &Path, dotfiles_root: &Path) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::link_spec::LinkKind;
     use std::fs;
     use tempfile::tempdir;
 
@@ -234,6 +235,15 @@ mod tests {
         LinkSpec {
             source: root.join(name),
             target: home.join(name),
+            kind: LinkKind::File,
+        }
+    }
+
+    fn dir_spec(root: &Path, home: &Path, name: &str) -> LinkSpec {
+        LinkSpec {
+            source: root.join(name),
+            target: home.join(name),
+            kind: LinkKind::Directory,
         }
     }
 
@@ -256,7 +266,7 @@ mod tests {
         fs::create_dir_all(&root).unwrap();
         fs::create_dir_all(&home).unwrap();
         fs::write(root.join(".a"), "").unwrap();
-        crate::fs::create_symlink(&root.join(".a"), &home.join(".a")).unwrap();
+        crate::fs::create_symlink(&root.join(".a"), &home.join(".a"), LinkKind::File).unwrap();
 
         let action = plan_one(&spec(&root, &home, ".a"), &root).unwrap();
         assert!(matches!(action, PlanAction::Noop(_)));
@@ -304,7 +314,7 @@ mod tests {
         fs::create_dir_all(&home).unwrap();
         fs::write(root.join(".a"), "").unwrap();
         fs::write(root.join(".b"), "").unwrap();
-        crate::fs::create_symlink(&root.join(".b"), &home.join(".a")).unwrap();
+        crate::fs::create_symlink(&root.join(".b"), &home.join(".a"), LinkKind::File).unwrap();
 
         let action = plan_one(&spec(&root, &home, ".a"), &root).unwrap();
         assert!(matches!(
@@ -322,7 +332,8 @@ mod tests {
         let root = temp.path().join("root");
         let home = temp.path().join("home");
         fs::create_dir_all(&home).unwrap();
-        crate::fs::create_symlink(&root.join(".missing"), &home.join(".a")).unwrap();
+        crate::fs::create_symlink(&root.join(".missing"), &home.join(".a"), LinkKind::File)
+            .unwrap();
 
         let action = plan_one(&spec(&root, &home, ".a"), &root).unwrap();
         assert!(matches!(action, PlanAction::Stale { .. }));
@@ -337,5 +348,84 @@ mod tests {
         let _ = plan(&[spec(&temp.path().join("root"), &home, ".a")], temp.path()).unwrap();
 
         assert!(!home.join(".a").exists());
+    }
+
+    #[test]
+    fn missing_target_for_directory_link_spec_creates_link_action() {
+        let temp = tempdir().unwrap();
+        let action = plan_one(
+            &dir_spec(
+                &temp.path().join("root"),
+                &temp.path().join("home"),
+                ".config/app",
+            ),
+            temp.path(),
+        )
+        .unwrap();
+
+        assert!(matches!(action, PlanAction::CreateLink(_)));
+    }
+
+    #[test]
+    fn expected_directory_symlink_is_noop() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/app")).unwrap();
+        fs::create_dir_all(home.join(".config")).unwrap();
+        crate::fs::create_symlink(
+            &root.join(".config/app"),
+            &home.join(".config/app"),
+            LinkKind::Directory,
+        )
+        .unwrap();
+
+        let action = plan_one(&dir_spec(&root, &home, ".config/app"), &root).unwrap();
+
+        assert!(matches!(action, PlanAction::Noop(_)));
+    }
+
+    #[test]
+    fn existing_directory_target_for_directory_link_spec_is_conflict() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(home.join(".config/app")).unwrap();
+
+        let action = plan_one(&dir_spec(&root, &home, ".config/app"), &root).unwrap();
+
+        assert!(matches!(
+            action,
+            PlanAction::Conflict {
+                reason: ConflictReason::Directory,
+                ..
+            }
+        ));
+    }
+
+    #[test]
+    fn directory_symlink_to_different_source_is_conflict() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/app")).unwrap();
+        fs::create_dir_all(root.join(".config/other")).unwrap();
+        fs::create_dir_all(home.join(".config")).unwrap();
+        crate::fs::create_symlink(
+            &root.join(".config/other"),
+            &home.join(".config/app"),
+            LinkKind::Directory,
+        )
+        .unwrap();
+
+        let action = plan_one(&dir_spec(&root, &home, ".config/app"), &root).unwrap();
+
+        assert!(matches!(
+            action,
+            PlanAction::Conflict {
+                reason: ConflictReason::DifferentSymlink,
+                ..
+            }
+        ));
     }
 }

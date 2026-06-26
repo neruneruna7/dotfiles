@@ -22,7 +22,7 @@ pub fn apply_plan(plan: &Plan) -> Result<()> {
 fn create_link_if_still_missing(spec: &LinkSpec) -> Result<()> {
     if matches!(fs::path_state(&spec.target)?, PathState::Missing) {
         fs::create_parent_dirs(&spec.target)?;
-        fs::create_symlink(&spec.source, &spec.target)?;
+        fs::create_symlink(&spec.source, &spec.target, spec.kind)?;
     }
     Ok(())
 }
@@ -107,6 +107,7 @@ fn clean_path(action: &CleanAction) -> &Path {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::link_spec::LinkKind;
     use crate::planner::{ConflictReason, Plan};
     use std::fs;
     use tempfile::tempdir;
@@ -115,6 +116,15 @@ mod tests {
         LinkSpec {
             source: root.join(name),
             target: home.join(name),
+            kind: LinkKind::File,
+        }
+    }
+
+    fn dir_spec(root: &Path, home: &Path, name: &str) -> LinkSpec {
+        LinkSpec {
+            source: root.join(name),
+            target: home.join(name),
+            kind: LinkKind::Directory,
         }
     }
 
@@ -131,6 +141,7 @@ mod tests {
             actions: vec![PlanAction::CreateLink(LinkSpec {
                 source: root.join(".a"),
                 target: spec.target,
+                kind: LinkKind::File,
             })],
         })
         .unwrap();
@@ -165,6 +176,7 @@ mod tests {
             actions: vec![PlanAction::Noop(LinkSpec {
                 source: temp.path().join("source"),
                 target: temp.path().join("target"),
+                kind: LinkKind::File,
             })],
         })
         .unwrap();
@@ -183,6 +195,7 @@ mod tests {
                 spec: LinkSpec {
                     source: temp.path().join("source"),
                     target: target.clone(),
+                    kind: LinkKind::File,
                 },
                 reason: ConflictReason::RegularFile,
             }],
@@ -202,6 +215,7 @@ mod tests {
             actions: vec![PlanAction::CreateLink(LinkSpec {
                 source: temp.path().join("source"),
                 target: target.clone(),
+                kind: LinkKind::File,
             })],
         })
         .unwrap();
@@ -219,11 +233,96 @@ mod tests {
             actions: vec![PlanAction::CreateLink(LinkSpec {
                 source: temp.path().join("source"),
                 target: target.clone(),
+                kind: LinkKind::File,
             })],
         })
         .unwrap();
 
         assert!(target.is_dir());
+    }
+
+    #[test]
+    fn create_link_for_directory_link_spec_makes_directory_symlink() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/app")).unwrap();
+        let spec = dir_spec(&root, &home, ".config/app");
+
+        apply_plan(&Plan {
+            actions: vec![PlanAction::CreateLink(spec.clone())],
+        })
+        .unwrap();
+
+        assert!(matches!(
+            crate::fs::path_state(&spec.target).unwrap(),
+            PathState::Symlink(_)
+        ));
+    }
+
+    #[test]
+    fn create_directory_link_makes_parent_directory() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/app")).unwrap();
+        let spec = dir_spec(&root, &home, ".config/app");
+
+        apply_plan(&Plan {
+            actions: vec![PlanAction::CreateLink(spec)],
+        })
+        .unwrap();
+
+        assert!(home.join(".config").is_dir());
+    }
+
+    #[test]
+    fn directory_link_creation_never_replaces_existing_directory() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/app")).unwrap();
+        fs::create_dir_all(home.join(".config/app")).unwrap();
+        fs::write(home.join(".config/app/local"), "keep").unwrap();
+
+        apply_plan(&Plan {
+            actions: vec![PlanAction::CreateLink(dir_spec(
+                &root,
+                &home,
+                ".config/app",
+            ))],
+        })
+        .unwrap();
+
+        assert_eq!(
+            fs::read_to_string(home.join(".config/app/local")).unwrap(),
+            "keep"
+        );
+        assert!(home.join(".config/app").is_dir());
+    }
+
+    #[test]
+    fn directory_link_creation_never_replaces_existing_regular_file() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".config/app")).unwrap();
+        fs::create_dir_all(home.join(".config")).unwrap();
+        fs::write(home.join(".config/app"), "keep").unwrap();
+
+        apply_plan(&Plan {
+            actions: vec![PlanAction::CreateLink(dir_spec(
+                &root,
+                &home,
+                ".config/app",
+            ))],
+        })
+        .unwrap();
+
+        assert_eq!(
+            fs::read_to_string(home.join(".config/app")).unwrap(),
+            "keep"
+        );
     }
 
     #[test]
@@ -237,7 +336,7 @@ mod tests {
         fs::create_dir_all(home.join(".config")).unwrap();
         fs::create_dir_all(root.join(".config")).unwrap();
         fs::write(root.join(".config/current"), "").unwrap();
-        crate::fs::create_symlink(&root.join(".old"), &home.join(".old")).unwrap();
+        crate::fs::create_symlink(&root.join(".old"), &home.join(".old"), LinkKind::File).unwrap();
 
         let actions = plan_clean(&home, &root, &[spec(&root, &home, ".config/current")]).unwrap();
         apply_clean(&actions).unwrap();
@@ -270,7 +369,7 @@ mod tests {
         let outside = temp.path().join("outside");
         fs::create_dir_all(&home).unwrap();
         fs::write(&outside, "").unwrap();
-        crate::fs::create_symlink(&outside, &home.join(".external")).unwrap();
+        crate::fs::create_symlink(&outside, &home.join(".external"), LinkKind::File).unwrap();
 
         let actions = plan_clean(&home, &root, &[]).unwrap();
         apply_clean(&actions).unwrap();
@@ -289,7 +388,12 @@ mod tests {
         fs::create_dir_all(&root).unwrap();
         fs::create_dir_all(&home).unwrap();
         fs::write(root.join(".current"), "").unwrap();
-        crate::fs::create_symlink(&root.join(".current"), &home.join(".current")).unwrap();
+        crate::fs::create_symlink(
+            &root.join(".current"),
+            &home.join(".current"),
+            LinkKind::File,
+        )
+        .unwrap();
 
         let actions = plan_clean(&home, &root, &[spec(&root, &home, ".current")]).unwrap();
         apply_clean(&actions).unwrap();
@@ -298,5 +402,55 @@ mod tests {
             crate::fs::path_state(&home.join(".current")).unwrap(),
             PathState::Symlink(_)
         ));
+    }
+
+    #[test]
+    fn clean_removes_unmanaged_directory_symlink_into_dotfiles_root() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".old")).unwrap();
+        fs::write(root.join(".old/file"), "keep").unwrap();
+        fs::create_dir_all(&home).unwrap();
+        crate::fs::create_symlink(&root.join(".old"), &home.join(".old"), LinkKind::Directory)
+            .unwrap();
+
+        let actions = plan_clean(&home, &root, &[]).unwrap();
+        apply_clean(&actions).unwrap();
+
+        assert!(matches!(
+            crate::fs::path_state(&home.join(".old")).unwrap(),
+            PathState::Missing
+        ));
+    }
+
+    #[test]
+    fn cleaning_directory_symlink_does_not_remove_link_target_contents() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(root.join(".old")).unwrap();
+        fs::write(root.join(".old/file"), "keep").unwrap();
+        fs::create_dir_all(&home).unwrap();
+        crate::fs::create_symlink(&root.join(".old"), &home.join(".old"), LinkKind::Directory)
+            .unwrap();
+
+        let actions = plan_clean(&home, &root, &[]).unwrap();
+        apply_clean(&actions).unwrap();
+
+        assert_eq!(fs::read_to_string(root.join(".old/file")).unwrap(), "keep");
+    }
+
+    #[test]
+    fn clean_does_not_remove_regular_directory() {
+        let temp = tempdir().unwrap();
+        let root = temp.path().join("root");
+        let home = temp.path().join("home");
+        fs::create_dir_all(home.join(".regular-dir")).unwrap();
+
+        let actions = plan_clean(&home, &root, &[]).unwrap();
+        apply_clean(&actions).unwrap();
+
+        assert!(home.join(".regular-dir").is_dir());
     }
 }

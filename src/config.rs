@@ -4,6 +4,7 @@ use std::path::{Component, Path, PathBuf};
 use shiguredo_toml::{Table, Value};
 
 use crate::error::{DotfilesError, Result, invalid_config};
+use crate::link_spec::LinkKind;
 
 /// `dotfiles.toml` を検証済みの内部表現に変換した設定である。
 ///
@@ -30,15 +31,6 @@ pub enum DefaultMapping {
     MirrorHome,
 }
 
-/// 将来のディレクトリリンク拡張を表す種別である。
-///
-/// MVP では `File` を主対象とし、`File` 指定時のディレクトリ source は拒否する。
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum LinkKind {
-    File,
-    Directory,
-}
-
 /// `[[links]]` で明示された例外リンクである。
 ///
 /// この段階では相対パス検証だけを行い、絶対パスへの正規化は `link_spec` に委ねる。
@@ -46,6 +38,7 @@ pub enum LinkKind {
 pub struct ConfiguredLink {
     pub source: PathBuf,
     pub target: PathBuf,
+    pub kind: LinkKind,
 }
 
 /// `dotfiles.toml` の文字列を読み、検証済みの `Config` に変換する。
@@ -123,11 +116,7 @@ fn parse_policy(table: &Table) -> Result<Policy> {
         "mirror-home" => DefaultMapping::MirrorHome,
         other => return Err(invalid_config(format!("unknown default_mapping: {other}"))),
     };
-    let link_kind = match required_string(table, "link_kind")? {
-        "file" => LinkKind::File,
-        "directory" => LinkKind::Directory,
-        other => return Err(invalid_config(format!("unknown link_kind: {other}"))),
-    };
+    let link_kind = parse_link_kind(required_string(table, "link_kind")?, "link_kind")?;
     let ignore = match table.get("ignore") {
         Some(Value::Array(values)) => values
             .iter()
@@ -165,9 +154,26 @@ fn optional_links(table: &Table) -> Result<Vec<ConfiguredLink>> {
             };
             let source = validate_source(required_string(link_table, "source")?)?;
             let target = validate_target(required_string(link_table, "target")?)?;
-            Ok(ConfiguredLink { source, target })
+            let kind = optional_link_kind(link_table)?;
+            Ok(ConfiguredLink {
+                source,
+                target,
+                kind,
+            })
         })
         .collect()
+}
+
+fn optional_link_kind(table: &Table) -> Result<LinkKind> {
+    match table.get("kind") {
+        Some(value) => parse_link_kind(
+            value
+                .as_str()
+                .ok_or_else(|| invalid_config("links[].kind must be a string"))?,
+            "links[].kind",
+        ),
+        None => Ok(LinkKind::File),
+    }
 }
 
 fn required_integer(table: &Table, key: &str) -> Result<i64> {
@@ -192,6 +198,14 @@ fn required_table<'a>(table: &'a Table, key: &str) -> Result<&'a Table> {
         .ok_or_else(|| invalid_config(format!("missing key: {key}")))?
         .as_table()
         .ok_or_else(|| invalid_config(format!("{key} must be a table")))
+}
+
+fn parse_link_kind(value: &str, field: &str) -> Result<LinkKind> {
+    match value {
+        "file" => Ok(LinkKind::File),
+        "directory" => Ok(LinkKind::Directory),
+        other => Err(invalid_config(format!("unknown {field}: {other}"))),
+    }
 }
 
 fn validate_source(source: &str) -> Result<PathBuf> {
@@ -358,6 +372,81 @@ target = ".config/app/config.toml"
         )
         .unwrap();
         assert_eq!(config.links.len(), 2);
+    }
+
+    #[test]
+    fn link_kind_directory_can_be_loaded() {
+        let config = parse_config(
+            r#"
+version = 1
+[policy]
+default_mapping = "mirror-home"
+link_kind = "file"
+[[links]]
+source = ".config/helix"
+target = ".config/helix"
+kind = "directory"
+"#,
+        )
+        .unwrap();
+
+        assert_eq!(config.links[0].kind, LinkKind::Directory);
+    }
+
+    #[test]
+    fn link_kind_file_can_be_loaded() {
+        let config = parse_config(
+            r#"
+version = 1
+[policy]
+default_mapping = "mirror-home"
+link_kind = "file"
+[[links]]
+source = ".config/git/config"
+target = ".gitconfig"
+kind = "file"
+"#,
+        )
+        .unwrap();
+
+        assert_eq!(config.links[0].kind, LinkKind::File);
+    }
+
+    #[test]
+    fn omitted_link_kind_defaults_to_file() {
+        let config = parse_config(
+            r#"
+version = 1
+[policy]
+default_mapping = "mirror-home"
+link_kind = "file"
+[[links]]
+source = ".config/git/config"
+target = ".gitconfig"
+"#,
+        )
+        .unwrap();
+
+        assert_eq!(config.links[0].kind, LinkKind::File);
+    }
+
+    #[test]
+    fn unknown_link_kind_is_config_error() {
+        let err = parse_config(
+            r#"
+version = 1
+[policy]
+default_mapping = "mirror-home"
+link_kind = "file"
+[[links]]
+source = ".config/git/config"
+target = ".gitconfig"
+kind = "socket"
+"#,
+        )
+        .unwrap_err();
+
+        assert!(matches!(err, DotfilesError::InvalidConfig(_)));
     }
 
     #[test]

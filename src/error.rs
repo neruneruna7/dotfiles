@@ -8,6 +8,12 @@ pub enum DotfilesError {
     #[error("source is a directory but link_kind is file: {0}")]
     SourceIsDirectory(PathBuf),
 
+    #[error("source is a file but link kind is directory: {0}")]
+    SourceIsFile(PathBuf),
+
+    #[error("source is a symlink, which is not supported as a managed source: {0}")]
+    SourceIsSymlink(PathBuf),
+
     #[error("target already exists and is not managed: {0}")]
     TargetConflict(PathBuf),
 
