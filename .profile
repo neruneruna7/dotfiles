@@ -27,14 +27,14 @@ if [ -d "$HOME/.local/bin" ] ; then
 fi
 . "$HOME/.cargo/env"
 #Added by bash script from https://astherier.com/blog/2021/07/windows11-wsl2-wslg-japanese/
-export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export XMODIFIERS=@im=fcitx
-export DefaultIMModule=fcitx
-if [ $SHLVL = 1 ] ; then
-  (fcitx-autostart > /dev/null 2>&1 &)
-  xset -r 49  > /dev/null 2>&1
-fi
+# export GTK_IM_MODULE=fcitx
+# export QT_IM_MODULE=fcitx
+# export XMODIFIERS=@im=fcitx
+# export DefaultIMModule=fcitx
+# if [ $SHLVL = 1 ] ; then
+#   (fcitx-autostart > /dev/null 2>&1 &)
+#   xset -r 49  > /dev/null 2>&1
+# fi
 #Added by bash script: end
 
 . "$HOME/.local/bin/env"
