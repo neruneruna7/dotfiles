@@ -127,8 +127,8 @@ fi
 # sccache ビルドキャッシュ先フォルダの設定
 # export SCCACHE_DIR="/mnt/u/マイドライブ/.cache/sccahe"
 # export SCCACHE_CACHE_SIZE=100000000000
-export RUSTC_WRAPPER=$(which sccache)
-echo RUSTC_WRAPPER
+# export RUSTC_WRAPPER=$(which sccache)
+# echo RUSTC_WRAPPER
 # sccache オンオフ切替シェルスクリプトのパス 
 # export PATH=$PATH:/home/hariboteereg/shell_script/
 
@@ -196,3 +196,8 @@ export PATH=/home/harib/.surrealdb:$PATH
 
 [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
+
+# >>> microsandbox >>>
+export PATH="$HOME/.microsandbox/bin:$PATH"
+export DYLD_LIBRARY_PATH="$HOME/.microsandbox/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
+# <<< microsandbox <<<

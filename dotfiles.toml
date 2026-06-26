@@ -1,0 +1,71 @@
+# dotfiles.toml
+#
+# このファイルは dotfiles 管理 CLI の設定ファイルである。
+# dotfiles root 配下の通常ファイルを HOME 側へ symlink する。
+# 通常ファイルを暗黙に上書きする設定は、現在の実装には存在しない。
+
+# 設定ファイル形式のバージョンである。
+# 現在サポートする値は 1 のみである。
+version = 1
+
+[policy]
+# dotfiles root 配下の相対パスを HOME 配下へ鏡像配置する。
+# 現在サポートする値は "mirror-home" のみである。
+#
+# 例:
+#   source: ~/dotfiles/.config/helix/config.toml
+#   target: ~/.config/helix/config.toml
+default_mapping = "mirror-home"
+
+# リンク対象の種別である。
+# 現在の MVP では "file" を主対象にする。
+# "directory" は型としては存在するが、ディレクトリリンク運用はまだ実装の主対象ではない。
+link_kind = "file"
+
+# デフォルト探索から除外する glob パターンである。
+# 実装側でも .git/**, dotfiles.toml, README*, LICENSE* は常に除外される。
+# ここには、このリポジトリ固有にリンク対象へしたくないものを追加する。
+ignore = [
+  # この CLI の開発用ファイルを HOME へリンクしない。
+  "Cargo.toml",
+  "Cargo.lock",
+  "src/**",
+  "tests/**",
+  "target/**",
+
+  # エディタ、言語サーバ、OS が生成する一時ファイルをリンクしない。
+  ".DS_Store",
+  "**/.DS_Store",
+  "*.swp",
+  "*.tmp",
+
+  # 既定除外を明示しておく。重複しても挙動は変わらない。
+  ".git/**",
+  "dotfiles.toml",
+  "README*",
+  "LICENSE*",
+  "scripts/**"
+]
+
+# 明示リンクである。
+# デフォルトの mirror-home 規則と異なる target に置きたい場合だけ使う。
+# source は dotfiles root からの相対パスであり、絶対パスや .. は禁止である。
+# target は HOME からの相対パス、または絶対パスである。
+#
+# [[links]]
+# source = ".config/git/config"
+# target = ".gitconfig"
+#
+# [[links]]
+# source = ".config/special/app.toml"
+# target = ".config/app/config.toml"
+
+# 未実装または現在は意図的に持たない設定である。
+# 安全性を優先するため、上書きやバックアップは CLI 設計として未導入である。
+#
+# [apply]
+# overwrite = false
+# backup = false
+#
+# [clean]
+# dry_run = true

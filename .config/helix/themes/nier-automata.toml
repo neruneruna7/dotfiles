@@ -1,0 +1,13 @@
+inherits = "everforest_dark"
+
+# "ui.background" = { bg = "nier_beige_dark" }
+"ui.text" = { fg = "nier_beige_light" }
+"ui.selection" = { bg = "nier_beige_semi_dark" }
+"ui.bufferline" = { fg = "nier_beige_light", bg = "nier_beige_semi_dark" }
+"ui.bufferline.active" = { fg = "nier_beige_dark", bg = "nier_beige_light", modifiers = ["bold"] }
+
+[palette]
+nier_beige_dark = "#4e4b42"
+nier_beige_semi_dark = "#635f54"
+nier_beige_light = "#dad4bb"
+nier_beige_semi_light = "#b4af9a"

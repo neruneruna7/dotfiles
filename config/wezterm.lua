@@ -4,14 +4,18 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 config.automatically_reload_config = true
 config.default_cursor_style = "BlinkingBar"
+-- 動作をOpenGLに
+config.front_end = "OpenGL"
+-- 最大FPSを制限
+config.max_fps = 60
 
 -- This is where you actually apply your config choices
 config.font_size = 15
 config.font = wezterm.font_with_fallback({
-    "Cica", 
-    "Consolas", 
-    "Courier New", 
-    "monospace", 
+    "Cica",
+    "Consolas",
+    "Courier New",
+    "monospace",
     "MesloLGM Nerd Font Mono"
 })
 -- config.use_ime = true
@@ -29,7 +33,7 @@ config.window_background_gradient = {
     colors = { "#1e1e1e" },
 }
 -- 起動時のシェルを指定
-config.default_prog = {"nu", "--login"}
+config.default_prog = { "nu", "--login" }
 
 
 -- 色設定
@@ -105,7 +109,25 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
         foreground = NierColor.nier_beige_dark
     end
 
-    local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
+    local function get_cwd_name(pane)
+        local cwd_uri = pane.current_working_dir
+        if not cwd_uri then
+            return ""
+        end
+
+        local cwd = cwd_uri.file_path or cwd_uri.path
+        if not cwd then
+            return ""
+        end
+
+        return cwd:match("([^/]+)$") or cwd
+    end
+
+    local cwd_name = get_cwd_name(tab.active_pane)
+
+    -- local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
+    local title = wezterm.truncate_right(cwd_name, max_width + 20)
+
 
     -- プロセス名に基づいてタイトルを取得する関数(nodeとかmakeとか表示)
     local function get_process_name(pane)
@@ -113,19 +135,19 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
         return process_name:match("([^/]+)$") or ""
     end
 
-    -- カスタムタイトルを取得する関数
-    local function get_custom_title(pane)
-        local process_name = get_process_name(pane)
-		if process_name ~= "zsh" then
-			return process_name
-        -- else
-        --     return get_last_n_chars(title, 23)
-        end
-		return process_name
-    end
+    -- -- カスタムタイトルを取得する関数
+    -- local function get_custom_title(pane)
+    --     local process_name = get_process_name(pane)
+    --     if process_name ~= "zsh" then
+    --         return process_name
+    --         -- else
+    --         --     return get_last_n_chars(title, 23)
+    --     end
+    --     return process_name
+    -- end
 
     -- カスタムタイトルを取得
-    local custom_title = get_custom_title(tab.active_pane)
+    -- local custom_title = get_custom_title(tab.active_pane)
     return {
         { Background = { Color = background } },
         { Foreground = { Color = foreground } },
@@ -161,7 +183,7 @@ local function GetKeyboard(elems, window)
 end
 local function LeftUpdate(window, pane)
     local elems = {}
-    GetKeyboard(elems, window)  
+    -- GetKeyboard(elems, window)
     window:set_left_status(wezterm.format(elems))
 end
 
@@ -172,13 +194,11 @@ end)
 
 
 
-
-
 -- リモート接続
 config.ssh_domains = {
-        {
+    {
         name = 'mac-mini',
-        remote_address = 'mac-mini.tailb5c229.ts.net',
+        remote_address = 'fd7a:115c:a1e0::8132:353e',
         username = 'kino',
         ssh_option = {
             identityfile = "C:/Users/harib/.ssh/id_ed25519_xservervps",
@@ -197,36 +217,36 @@ config.ssh_domains = {
 -- キーコンフィグ
 local act = wezterm.action
 
--- config.leader = { key = 'phys:Space', mods = 'CTRL',timeout_milliseconds=1000 }
-config.leader = { key = 'd', mods = 'CTRL',timeout_milliseconds=1000 }
+config.leader = { key = 'phys:Space', mods = 'CTRL', timeout_milliseconds = 1000 }
+-- config.leader = { key = 'd', mods = 'CTRL',timeout_milliseconds=1000 }
 
 config.keys = {
     -- よくわかんないやつら
-    { key = 'Enter', mods = 'ALT', action = act.ToggleFullScreen },
-    { key = 'K', mods = 'CTRL', action = act.ClearScrollback 'ScrollbackOnly' },
-    { key = 'K', mods = 'SHIFT|CTRL', action = act.ClearScrollback 'ScrollbackOnly' },
-    { key = 'k', mods = 'SHIFT|CTRL', action = act.ClearScrollback 'ScrollbackOnly' },
-    { key = 'k', mods = 'SUPER', action = act.ClearScrollback 'ScrollbackOnly' },
-    { key = 'l', mods = 'SHIFT|CTRL', action = act.ShowDebugOverlay },
-    { key = 'L', mods = 'CTRL', action = act.ShowDebugOverlay },
-    { key = 'L', mods = 'SHIFT|CTRL', action = act.ShowDebugOverlay },
-    { key = 'R', mods = 'CTRL', action = act.ReloadConfiguration },
-    { key = 'R', mods = 'SHIFT|CTRL', action = act.ReloadConfiguration },
-    { key = 'r', mods = 'SHIFT|CTRL', action = act.ReloadConfiguration },
-    { key = 'r', mods = 'SUPER', action = act.ReloadConfiguration },
+    { key = 'Enter',      mods = 'ALT',        action = act.ToggleFullScreen },
+    { key = 'K',          mods = 'CTRL',       action = act.ClearScrollback 'ScrollbackOnly' },
+    { key = 'K',          mods = 'SHIFT|CTRL', action = act.ClearScrollback 'ScrollbackOnly' },
+    { key = 'k',          mods = 'SHIFT|CTRL', action = act.ClearScrollback 'ScrollbackOnly' },
+    { key = 'k',          mods = 'SUPER',      action = act.ClearScrollback 'ScrollbackOnly' },
+    { key = 'l',          mods = 'SHIFT|CTRL', action = act.ShowDebugOverlay },
+    { key = 'L',          mods = 'CTRL',       action = act.ShowDebugOverlay },
+    { key = 'L',          mods = 'SHIFT|CTRL', action = act.ShowDebugOverlay },
+    { key = 'R',          mods = 'CTRL',       action = act.ReloadConfiguration },
+    { key = 'R',          mods = 'SHIFT|CTRL', action = act.ReloadConfiguration },
+    { key = 'r',          mods = 'SHIFT|CTRL', action = act.ReloadConfiguration },
+    { key = 'r',          mods = 'SUPER',      action = act.ReloadConfiguration },
 
     -- コマンドパレット
-    { key = 'p', mods = 'SHIFT|CTRL', action = act.ActivateCommandPalette },
-    { key = 'P', mods = 'CTRL', action = act.ActivateCommandPalette },
-    { key = 'P', mods = 'SHIFT|CTRL', action = act.ActivateCommandPalette },
+    { key = 'p',          mods = 'SHIFT|CTRL', action = act.ActivateCommandPalette },
+    { key = 'P',          mods = 'CTRL',       action = act.ActivateCommandPalette },
+    { key = 'P',          mods = 'SHIFT|CTRL', action = act.ActivateCommandPalette },
 
-    -- クイックセレクト？ 
+    -- クイックセレクト？
     -- URLやパス、ハッシュ値などのパターンを画面内で認識して少ないキータイプでコピーできる。
     -- らしい
-    { key = 'c', mods = 'LEADER', action = act.QuickSelect },
+    { key = 'c',          mods = 'LEADER',     action = act.QuickSelect },
     -- フォント関連 操作なし
     -- いざってときのためにリセットだけ残しておく
-    { key = '0', mods = 'CTRL', action = act.ResetFontSize },
+    { key = '0',          mods = 'CTRL',       action = act.ResetFontSize },
     -- { key = ')', mods = 'CTRL', action = act.ResetFontSize },
     -- { key = ')', mods = 'SHIFT|CTRL', action = act.ResetFontSize },
     -- { key = '+', mods = 'CTRL', action = act.IncreaseFontSize },
@@ -244,30 +264,30 @@ config.keys = {
 
     -- ウィンドウ関連
     -- 新規ウィンドウ
-    { key = 'N', mods = 'CTRL', action = act.SpawnWindow },
-    { key = 'N', mods = 'SHIFT|CTRL', action = act.SpawnWindow },
-    { key = 'n', mods = 'SHIFT|CTRL', action = act.SpawnWindow },
+    { key = 'N',          mods = 'CTRL',       action = act.SpawnWindow },
+    { key = 'N',          mods = 'SHIFT|CTRL', action = act.SpawnWindow },
+    { key = 'n',          mods = 'SHIFT|CTRL', action = act.SpawnWindow },
     -- 最小化
-    { key = 'M', mods = 'CTRL', action = act.Hide },
-    { key = 'M', mods = 'SHIFT|CTRL', action = act.Hide },
-    { key = 'm', mods = 'SHIFT|CTRL', action = act.Hide },
+    { key = 'M',          mods = 'CTRL',       action = act.Hide },
+    { key = 'M',          mods = 'SHIFT|CTRL', action = act.Hide },
+    { key = 'm',          mods = 'SHIFT|CTRL', action = act.Hide },
 
 
 
     -- タブ関連
     -- 新規タブ作成
     -- { key = 'T', mods = 'CTRL', action = act.SpawnTab 'CurrentPaneDomain' },
-    { key = 'T', mods = 'SHIFT|CTRL', action = act.SpawnTab 'CurrentPaneDomain' },
-    { key = 't', mods = 'SHIFT|CTRL', action = act.SpawnTab 'CurrentPaneDomain' },
+    { key = 'T',          mods = 'SHIFT|CTRL', action = act.SpawnTab 'CurrentPaneDomain' },
+    { key = 't',          mods = 'SHIFT|CTRL', action = act.SpawnTab 'CurrentPaneDomain' },
     -- 現在のタブを閉じる
     -- { key = 'W', mods = 'CTRL', action = act.CloseCurrentTab{ confirm = true } },
-    { key = 'W', mods = 'SHIFT|CTRL', action = act.CloseCurrentTab{ confirm = true } },
-    { key = 'w', mods = 'SHIFT|CTRL', action = act.CloseCurrentTab{ confirm = true } },
+    { key = 'W',          mods = 'SHIFT|CTRL', action = act.CloseCurrentTab { confirm = true } },
+    { key = 'w',          mods = 'SHIFT|CTRL', action = act.CloseCurrentTab { confirm = true } },
     -- アクティブなタブを移動する
-    { key = 'LeftArrow', mods = 'ALT', action = act.ActivateTabRelative(-1) },
-    { key = 'RightArrow', mods = 'ALT', action = act.ActivateTabRelative(1) },
+    { key = 'LeftArrow',  mods = 'ALT',        action = act.ActivateTabRelative(-1) },
+    { key = 'RightArrow', mods = 'ALT',        action = act.ActivateTabRelative(1) },
     -- タブの位置を移動する
-    { key = 'LeftArrow', mods = 'CTRL|SHIFT', action = act.MoveTabRelative(-1) },
+    { key = 'LeftArrow',  mods = 'CTRL|SHIFT', action = act.MoveTabRelative(-1) },
     { key = 'RightArrow', mods = 'CTRL|SHIFT', action = act.MoveTabRelative(1) },
     -- 絶対タブ位置の移動操作はなし コメントにして痕跡だけ残す
     -- { key = '!', mods = 'CTRL', action = act.ActivateTab(0) },
@@ -311,14 +331,14 @@ config.keys = {
 
     -- ペイン関連 LEADERキーを主に操作する
     -- ペインの移動
-    { key = 'LeftArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Left' },
-    { key = 'RightArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Right' },
-    { key = 'UpArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Up' },
-    { key = 'DownArrow', mods = 'LEADER', action = act.ActivatePaneDirection 'Down' },
-    { key = 'LeftArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Left' },
-    { key = 'RightArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Right' },
-    { key = 'UpArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Up' },
-    { key = 'DownArrow', mods = 'SHIFT|ALT', action = act.ActivatePaneDirection 'Down' },
+    { key = 'LeftArrow',  mods = 'LEADER',     action = act.ActivatePaneDirection 'Left' },
+    { key = 'RightArrow', mods = 'LEADER',     action = act.ActivatePaneDirection 'Right' },
+    { key = 'UpArrow',    mods = 'LEADER',     action = act.ActivatePaneDirection 'Up' },
+    { key = 'DownArrow',  mods = 'LEADER',     action = act.ActivatePaneDirection 'Down' },
+    { key = 'LeftArrow',  mods = 'SHIFT|ALT',  action = act.ActivatePaneDirection 'Left' },
+    { key = 'RightArrow', mods = 'SHIFT|ALT',  action = act.ActivatePaneDirection 'Right' },
+    { key = 'UpArrow',    mods = 'SHIFT|ALT',  action = act.ActivatePaneDirection 'Up' },
+    { key = 'DownArrow',  mods = 'SHIFT|ALT',  action = act.ActivatePaneDirection 'Down' },
 
     -- ペインの大きさを操作 LEADER押しっぱができないのは残念
     -- { key = 'UpArrow', mods = 'LEADER', action = act.AdjustPaneSize{ 'Up', 1 } },
@@ -326,127 +346,166 @@ config.keys = {
     -- { key = 'LeftArrow', mods = 'LEADER', action = act.AdjustPaneSize{ 'Left', 1 } },
     -- { key = 'DownArrow', mods = 'LEADER', action = act.AdjustPaneSize{ 'Down', 1 } },
     -- 選択中のペインを最大化 または もとの大きさに戻す
-    { key = 'z', mods = 'SHIFT|CTRL', action = act.TogglePaneZoomState },
-    { key = 'Z', mods = 'CTRL', action = act.TogglePaneZoomState },
-    { key = 'Z', mods = 'SHIFT|CTRL', action = act.TogglePaneZoomState },
+    { key = 'z',          mods = 'SHIFT|CTRL', action = act.TogglePaneZoomState },
+    { key = 'Z',          mods = 'CTRL',       action = act.TogglePaneZoomState },
+    { key = 'Z',          mods = 'SHIFT|CTRL', action = act.TogglePaneZoomState },
     -- ペイン分割
-    { key = 'v', mods = 'LEADER', action = act.SplitVertical{ domain =  'CurrentPaneDomain' } },
-    { key = 'h', mods = 'LEADER', action = act.SplitHorizontal{ domain =  'CurrentPaneDomain' } },
+    { key = 'v',          mods = 'LEADER',     action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
+    { key = 'h',          mods = 'LEADER',     action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     -- ペインを閉じる
-    { key = "w", mods = "LEADER", action = act.CloseCurrentPane{ confirm = false } },
+    { key = "w",          mods = "LEADER",     action = act.CloseCurrentPane { confirm = false } },
 
     -- 検索関連
-    { key = 'f', mods = 'CTRL', action = act.Search 'CurrentSelectionOrEmptyString' },
+    { key = 'f',          mods = 'CTRL',       action = act.Search 'CurrentSelectionOrEmptyString' },
 
     -- コピペ関連
-    { key = 'U', mods = 'CTRL', action = act.CharSelect{ copy_on_select = true, copy_to =  'ClipboardAndPrimarySelection' } },
-    { key = 'U', mods = 'SHIFT|CTRL', action = act.CharSelect{ copy_on_select = true, copy_to =  'ClipboardAndPrimarySelection' } },
-    { key = 'u', mods = 'SHIFT|CTRL', action = act.CharSelect{ copy_on_select = true, copy_to =  'ClipboardAndPrimarySelection' } },
-    { key = 'X', mods = 'SHIFT|CTRL', action = act.ActivateCopyMode },
-    { key = 'x', mods = 'SHIFT|CTRL', action = act.ActivateCopyMode },
-    { key = 'Copy', mods = 'NONE', action = act.CopyTo 'Clipboard' },
-    { key = 'c', mods = 'SHIFT|CTRL', action = act.CopyTo 'Clipboard' },
-    { key = 'C', mods = 'SHIFT|CTRL', action = act.CopyTo 'Clipboard' },
-    { key = 'Insert', mods = 'CTRL', action = act.CopyTo 'PrimarySelection' },
+    { key = 'U',          mods = 'CTRL',       action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
+    { key = 'U',          mods = 'SHIFT|CTRL', action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
+    { key = 'u',          mods = 'SHIFT|CTRL', action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
+    { key = 'X',          mods = 'SHIFT|CTRL', action = act.ActivateCopyMode },
+    { key = 'x',          mods = 'SHIFT|CTRL', action = act.ActivateCopyMode },
+    { key = 'Copy',       mods = 'NONE',       action = act.CopyTo 'Clipboard' },
+    { key = 'c',          mods = 'SHIFT|CTRL', action = act.CopyTo 'Clipboard' },
+    { key = 'C',          mods = 'SHIFT|CTRL', action = act.CopyTo 'Clipboard' },
+    { key = 'Insert',     mods = 'CTRL',       action = act.CopyTo 'PrimarySelection' },
     -- { key = 'c', mods = 'CTRL', action = SIGKILL }, 実質的にこれ
-    { key = 'Insert', mods = 'SHIFT', action = act.PasteFrom 'PrimarySelection' },
-    { key = 'Paste', mods = 'NONE', action = act.PasteFrom 'Clipboard' },
-    { key = 'V', mods = 'CTRL|SHIFT', action = act.PasteFrom 'Clipboard' },
-    { key = 'v', mods = 'CTRL|SHIFT', action = act.PasteFrom 'Clipboard' },
+    { key = 'Insert',     mods = 'SHIFT',      action = act.PasteFrom 'PrimarySelection' },
+    { key = 'Paste',      mods = 'NONE',       action = act.PasteFrom 'Clipboard' },
+    { key = 'V',          mods = 'CTRL|SHIFT', action = act.PasteFrom 'Clipboard' },
+    { key = 'v',          mods = 'CTRL|SHIFT', action = act.PasteFrom 'Clipboard' },
+    -- 背景の透過度の切り替え．透明と不透明
+    {
+        key = 'O',
+        mods = 'CTRL|SHIFT',
+        action = wezterm.action_callback(function(window, pane)
+            local overrides = window:get_config_overrides() or {}
+
+            -- 現在、不透明(1.0)モードかどうか判定
+            if overrides.window_background_opacity == 1.0 then
+                -- 【不透明 -> 透明へ】
+                -- 上書き設定をnilにして、デフォルト(透明度0.8, 画像なし)に戻す
+                overrides.window_background_opacity = nil
+                overrides.background = nil
+            else
+                -- 【透明 -> 不透明へ】
+                -- 透明度を1.0にし、用意しておいた背景画像設定を適用する
+                overrides.window_background_opacity = 1.0
+                -- overrides.background = opaque_background_config
+            end
+
+            window:set_config_overrides(overrides)
+        end),
+    },
 }
 config.key_tables = {
     copy_mode = {
-        { key = 'Enter', mods = 'NONE', action = act.CopyMode 'MoveToStartOfNextLine' },
-        { key = 'Space', mods = 'NONE', action = act.CopyMode{ SetSelectionMode =  'Cell' } },
-        { key = '$', mods = 'NONE', action = act.CopyMode 'MoveToEndOfLineContent' },
-        { key = '$', mods = 'SHIFT', action = act.CopyMode 'MoveToEndOfLineContent' },
-        { key = ',', mods = 'NONE', action = act.CopyMode 'JumpReverse' },
-        { key = '0', mods = 'NONE', action = act.CopyMode 'MoveToStartOfLine' },
-        { key = ';', mods = 'NONE', action = act.CopyMode 'JumpAgain' },
-        { key = 'F', mods = 'NONE', action = act.CopyMode{ JumpBackward = { prev_char = false } } },
-        { key = 'F', mods = 'SHIFT', action = act.CopyMode{ JumpBackward = { prev_char = false } } },
-        { key = 'G', mods = 'NONE', action = act.CopyMode 'MoveToScrollbackBottom' },
-        { key = 'G', mods = 'SHIFT', action = act.CopyMode 'MoveToScrollbackBottom' },
-        { key = 'H', mods = 'NONE', action = act.CopyMode 'MoveToViewportTop' },
-        { key = 'H', mods = 'SHIFT', action = act.CopyMode 'MoveToViewportTop' },
-        { key = 'L', mods = 'NONE', action = act.CopyMode 'MoveToViewportBottom' },
-        { key = 'L', mods = 'SHIFT', action = act.CopyMode 'MoveToViewportBottom' },
-        { key = 'M', mods = 'NONE', action = act.CopyMode 'MoveToViewportMiddle' },
-        { key = 'M', mods = 'SHIFT', action = act.CopyMode 'MoveToViewportMiddle' },
-        { key = 'O', mods = 'NONE', action = act.CopyMode 'MoveToSelectionOtherEndHoriz' },
-        { key = 'O', mods = 'SHIFT', action = act.CopyMode 'MoveToSelectionOtherEndHoriz' },
-        { key = 'T', mods = 'NONE', action = act.CopyMode{ JumpBackward = { prev_char = true } } },
-        { key = 'T', mods = 'SHIFT', action = act.CopyMode{ JumpBackward = { prev_char = true } } },
-        { key = 'V', mods = 'NONE', action = act.CopyMode{ SetSelectionMode =  'Line' } },
-        { key = 'V', mods = 'SHIFT', action = act.CopyMode{ SetSelectionMode =  'Line' } },
-        { key = '^', mods = 'NONE', action = act.CopyMode 'MoveToStartOfLineContent' },
-        { key = '^', mods = 'SHIFT', action = act.CopyMode 'MoveToStartOfLineContent' },
-        { key = 'b', mods = 'CTRL', action = act.CopyMode 'PageUp' },
-        { key = 'c', mods = 'CTRL', action = act.CopyMode 'Close' },
-        { key = 'd', mods = 'CTRL', action = act.CopyMode{ MoveByPage = (0.5) } },
-        { key = 'e', mods = 'NONE', action = act.CopyMode 'MoveForwardWordEnd' },
-        { key = 'f', mods = 'NONE', action = act.CopyMode{ JumpForward = { prev_char = false } } },
-        { key = 'f', mods = 'CTRL', action = act.CopyMode 'PageDown' },
-        { key = 'g', mods = 'NONE', action = act.CopyMode 'MoveToScrollbackTop' },
-        { key = 'g', mods = 'CTRL', action = act.CopyMode 'Close' },
-        { key = 'm', mods = 'ALT', action = act.CopyMode 'MoveToStartOfLineContent' },
-        { key = 'o', mods = 'NONE', action = act.CopyMode 'MoveToSelectionOtherEnd' },
-        { key = 't', mods = 'NONE', action = act.CopyMode{ JumpForward = { prev_char = true } } },
-        { key = 'u', mods = 'CTRL', action = act.CopyMode{ MoveByPage = (-0.5) } },
+        { key = 'Enter',      mods = 'NONE',       action = act.CopyMode 'MoveToStartOfNextLine' },
+        { key = 'Space',      mods = 'NONE',       action = act.CopyMode { SetSelectionMode = 'Cell' } },
+        { key = '$',          mods = 'NONE',       action = act.CopyMode 'MoveToEndOfLineContent' },
+        { key = '$',          mods = 'SHIFT',      action = act.CopyMode 'MoveToEndOfLineContent' },
+        { key = ',',          mods = 'NONE',       action = act.CopyMode 'JumpReverse' },
+        { key = '0',          mods = 'NONE',       action = act.CopyMode 'MoveToStartOfLine' },
+        { key = ';',          mods = 'NONE',       action = act.CopyMode 'JumpAgain' },
+        { key = 'F',          mods = 'NONE',       action = act.CopyMode { JumpBackward = { prev_char = false } } },
+        { key = 'F',          mods = 'SHIFT',      action = act.CopyMode { JumpBackward = { prev_char = false } } },
+        { key = 'G',          mods = 'NONE',       action = act.CopyMode 'MoveToScrollbackBottom' },
+        { key = 'G',          mods = 'SHIFT',      action = act.CopyMode 'MoveToScrollbackBottom' },
+        { key = 'H',          mods = 'NONE',       action = act.CopyMode 'MoveToViewportTop' },
+        { key = 'H',          mods = 'SHIFT',      action = act.CopyMode 'MoveToViewportTop' },
+        { key = 'L',          mods = 'NONE',       action = act.CopyMode 'MoveToViewportBottom' },
+        { key = 'L',          mods = 'SHIFT',      action = act.CopyMode 'MoveToViewportBottom' },
+        { key = 'M',          mods = 'NONE',       action = act.CopyMode 'MoveToViewportMiddle' },
+        { key = 'M',          mods = 'SHIFT',      action = act.CopyMode 'MoveToViewportMiddle' },
+        { key = 'O',          mods = 'NONE',       action = act.CopyMode 'MoveToSelectionOtherEndHoriz' },
+        { key = 'O',          mods = 'SHIFT',      action = act.CopyMode 'MoveToSelectionOtherEndHoriz' },
+        { key = 'T',          mods = 'NONE',       action = act.CopyMode { JumpBackward = { prev_char = true } } },
+        { key = 'T',          mods = 'SHIFT',      action = act.CopyMode { JumpBackward = { prev_char = true } } },
+        { key = 'V',          mods = 'NONE',       action = act.CopyMode { SetSelectionMode = 'Line' } },
+        { key = 'V',          mods = 'SHIFT',      action = act.CopyMode { SetSelectionMode = 'Line' } },
+        { key = '^',          mods = 'NONE',       action = act.CopyMode 'MoveToStartOfLineContent' },
+        { key = '^',          mods = 'SHIFT',      action = act.CopyMode 'MoveToStartOfLineContent' },
+        { key = 'b',          mods = 'CTRL',       action = act.CopyMode 'PageUp' },
+        { key = 'c',          mods = 'CTRL',       action = act.CopyMode 'Close' },
+        { key = 'd',          mods = 'CTRL',       action = act.CopyMode { MoveByPage = (0.5) } },
+        { key = 'e',          mods = 'NONE',       action = act.CopyMode 'MoveForwardWordEnd' },
+        { key = 'f',          mods = 'NONE',       action = act.CopyMode { JumpForward = { prev_char = false } } },
+        { key = 'f',          mods = 'CTRL',       action = act.CopyMode 'PageDown' },
+        { key = 'g',          mods = 'NONE',       action = act.CopyMode 'MoveToScrollbackTop' },
+        { key = 'g',          mods = 'CTRL',       action = act.CopyMode 'Close' },
+        { key = 'm',          mods = 'ALT',        action = act.CopyMode 'MoveToStartOfLineContent' },
+        { key = 'o',          mods = 'NONE',       action = act.CopyMode 'MoveToSelectionOtherEnd' },
+        { key = 't',          mods = 'NONE',       action = act.CopyMode { JumpForward = { prev_char = true } } },
+        { key = 'u',          mods = 'CTRL',       action = act.CopyMode { MoveByPage = (-0.5) } },
 
         -- コピーモードを終了
-        { key = 'Escape', mods = 'NONE', action = act.CopyMode 'Close' },
-        { key = 'X', mods = 'SHIFT|CTRL', action = act.CopyMode 'Close' },
-        { key = 'q', mods = 'NONE', action = act.CopyMode 'Close' },
+        { key = 'Escape',     mods = 'NONE',       action = act.CopyMode 'Close' },
+        { key = 'X',          mods = 'SHIFT|CTRL', action = act.CopyMode 'Close' },
+        { key = 'q',          mods = 'NONE',       action = act.CopyMode 'Close' },
 
         -- 普通の選択モード
-        { key = 'v', mods = 'NONE', action = act.CopyMode{ SetSelectionMode =  'Cell' } },
+        { key = 'v',          mods = 'NONE',       action = act.CopyMode { SetSelectionMode = 'Cell' } },
         -- 矩形選択モード
-        { key = 'v', mods = 'CTRL', action = act.CopyMode{ SetSelectionMode =  'Block' } },
+        { key = 'v',          mods = 'CTRL',       action = act.CopyMode { SetSelectionMode = 'Block' } },
 
         -- コピーする
-        { key = 'c', mods = 'SHIFT|CTRL', action = act.Multiple{ { CopyTo =  'ClipboardAndPrimarySelection' }, { CopyMode =  'Close' } } },
-        { key = 'C', mods = 'SHIFT|CTRL', action = act.Multiple{ { CopyTo =  'ClipboardAndPrimarySelection' }, { CopyMode =  'Close' } } },
-    
+        { key = 'c',          mods = 'SHIFT|CTRL', action = act.Multiple { { CopyTo = 'ClipboardAndPrimarySelection' }, { CopyMode = 'Close' } } },
+        { key = 'C',          mods = 'SHIFT|CTRL', action = act.Multiple { { CopyTo = 'ClipboardAndPrimarySelection' }, { CopyMode = 'Close' } } },
+
         -- 移動
-        { key = 'PageUp', mods = 'NONE', action = act.CopyMode 'PageUp' },
-        { key = 'PageDown', mods = 'NONE', action = act.CopyMode 'PageDown' },
-        { key = 'End', mods = 'NONE', action = act.CopyMode 'MoveToEndOfLineContent' },
-        { key = 'Home', mods = 'NONE', action = act.CopyMode 'MoveToStartOfLine' },
+        { key = 'PageUp',     mods = 'NONE',       action = act.CopyMode 'PageUp' },
+        { key = 'PageDown',   mods = 'NONE',       action = act.CopyMode 'PageDown' },
+        { key = 'End',        mods = 'NONE',       action = act.CopyMode 'MoveToEndOfLineContent' },
+        { key = 'Home',       mods = 'NONE',       action = act.CopyMode 'MoveToStartOfLine' },
         -- 文字・ワード単位で移動
-        { key = 'LeftArrow', mods = 'NONE', action = act.CopyMode 'MoveLeft' },
-        { key = 'LeftArrow', mods = 'CTRL', action = act.CopyMode 'MoveBackwardWord' },
-        { key = 'RightArrow', mods = 'NONE', action = act.CopyMode 'MoveRight' },
-        { key = 'RightArrow', mods = 'CTRL', action = act.CopyMode 'MoveForwardWord' },
-        { key = 'UpArrow', mods = 'NONE', action = act.CopyMode 'MoveUp' },
-        { key = 'UpArrow', mods = 'CTRL', action = act.CopyMode 'MoveUp' },
-        { key = 'DownArrow', mods = 'NONE', action = act.CopyMode 'MoveDown' },
-        { key = 'DownArrow', mods = 'CTRL', action = act.CopyMode 'MoveDown' },
-        { key = 'h', mods = 'NONE', action = act.CopyMode 'MoveLeft' },
-        { key = 'h', mods = 'CTRL', action = act.CopyMode 'MoveBackwardWord' },
-        { key = 'j', mods = 'NONE', action = act.CopyMode 'MoveDown' },
-        { key = 'j', mods = 'CTRL', action = act.CopyMode 'MoveDown' },
-        { key = 'k', mods = 'NONE', action = act.CopyMode 'MoveUp' },
-        { key = 'k', mods = 'CTRL', action = act.CopyMode 'MoveUp' },
-        { key = 'l', mods = 'NONE', action = act.CopyMode 'MoveRight' },
-        { key = 'l', mods = 'CTRL', action = act.CopyMode 'MoveForwardWord' },
+        { key = 'LeftArrow',  mods = 'NONE',       action = act.CopyMode 'MoveLeft' },
+        { key = 'LeftArrow',  mods = 'CTRL',       action = act.CopyMode 'MoveBackwardWord' },
+        { key = 'RightArrow', mods = 'NONE',       action = act.CopyMode 'MoveRight' },
+        { key = 'RightArrow', mods = 'CTRL',       action = act.CopyMode 'MoveForwardWord' },
+        { key = 'UpArrow',    mods = 'NONE',       action = act.CopyMode 'MoveUp' },
+        { key = 'UpArrow',    mods = 'CTRL',       action = act.CopyMode 'MoveUp' },
+        { key = 'DownArrow',  mods = 'NONE',       action = act.CopyMode 'MoveDown' },
+        { key = 'DownArrow',  mods = 'CTRL',       action = act.CopyMode 'MoveDown' },
+        { key = 'h',          mods = 'NONE',       action = act.CopyMode 'MoveLeft' },
+        { key = 'h',          mods = 'CTRL',       action = act.CopyMode 'MoveBackwardWord' },
+        { key = 'j',          mods = 'NONE',       action = act.CopyMode 'MoveDown' },
+        { key = 'j',          mods = 'CTRL',       action = act.CopyMode 'MoveDown' },
+        { key = 'k',          mods = 'NONE',       action = act.CopyMode 'MoveUp' },
+        { key = 'k',          mods = 'CTRL',       action = act.CopyMode 'MoveUp' },
+        { key = 'l',          mods = 'NONE',       action = act.CopyMode 'MoveRight' },
+        { key = 'l',          mods = 'CTRL',       action = act.CopyMode 'MoveForwardWord' },
 
     },
 
     search_mode = {
-        { key = 'Enter', mods = 'NONE', action = act.CopyMode 'PriorMatch' },
-        { key = 'Escape', mods = 'NONE', action = act.CopyMode 'Close' },
-        { key = 'f', mods = 'CTRL', action = act.CopyMode 'Close' },
-        { key = 'n', mods = 'CTRL', action = act.CopyMode 'NextMatch' },
-        { key = 'p', mods = 'CTRL', action = act.CopyMode 'PriorMatch' },
-        { key = 'r', mods = 'CTRL', action = act.CopyMode 'CycleMatchType' },
-        { key = 'u', mods = 'CTRL', action = act.CopyMode 'ClearPattern' },
-        { key = 'PageUp', mods = 'NONE', action = act.CopyMode 'PriorMatchPage' },
-        { key = 'PageDown', mods = 'NONE', action = act.CopyMode 'NextMatchPage' },
-        { key = 'UpArrow', mods = 'NONE', action = act.CopyMode 'PriorMatch' },
+        { key = 'Enter',     mods = 'NONE', action = act.CopyMode 'PriorMatch' },
+        { key = 'Escape',    mods = 'NONE', action = act.CopyMode 'Close' },
+        { key = 'f',         mods = 'CTRL', action = act.CopyMode 'Close' },
+        { key = 'n',         mods = 'CTRL', action = act.CopyMode 'NextMatch' },
+        { key = 'p',         mods = 'CTRL', action = act.CopyMode 'PriorMatch' },
+        { key = 'r',         mods = 'CTRL', action = act.CopyMode 'CycleMatchType' },
+        { key = 'u',         mods = 'CTRL', action = act.CopyMode 'ClearPattern' },
+        { key = 'PageUp',    mods = 'NONE', action = act.CopyMode 'PriorMatchPage' },
+        { key = 'PageDown',  mods = 'NONE', action = act.CopyMode 'NextMatchPage' },
+        { key = 'UpArrow',   mods = 'NONE', action = act.CopyMode 'PriorMatch' },
         { key = 'DownArrow', mods = 'NONE', action = act.CopyMode 'NextMatch' },
     },
 }
+
+-- -- ユーザー変数が変更された時のイベントリスナー
+-- wezterm.on('user-var-changed', function(window, pane, name, value)
+--     -- 変数名が "IME" で、値が "OFF" の場合のみ実行
+--     if name == "IME" and value == "OFF" then
+--         wezterm.log_info("Disabling IME via win-im-sw.exe")
+
+--         -- 作成したRustツールのパスを指定して実行
+--         -- ※パスはご自身の環境に合わせて変更してください
+--         wezterm.run_child_process({ "my_im_select.exe" })
+--     end
+-- end)
+
+-- 拡張キーエンコーディングを有効化
+-- CSL-u
+config.enable_csi_u_key_encoding = true
 
 -- and finally, return the configuration to wezterm
 return config

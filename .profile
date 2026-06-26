@@ -40,3 +40,11 @@ fi
 . "$HOME/.local/bin/env"
 
 . "$HOME/.atuin/bin/env"
+
+# >>> microsandbox >>>
+export PATH="$HOME/.microsandbox/bin:$PATH"
+export DYLD_LIBRARY_PATH="$HOME/.microsandbox/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIBRARY_PATH}"
+# <<< microsandbox <<<
+
+# leanの管理ツール
+export PATH="$HOME/.elan/bin:$PATH"

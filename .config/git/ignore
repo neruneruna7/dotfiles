@@ -1,0 +1,11 @@
+GEMINI.md
+AGENTS.md
+.codex
+.zed
+
+.env
+.env.local
+.env.*local
+.envrc
+.DS_Store
+.neru7/

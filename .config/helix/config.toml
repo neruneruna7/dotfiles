@@ -11,4 +11,4 @@ cursorline = true
 [editor.cursor-shape]
 insert = "bar"
 normal = "block" # デフォルトで block なので実際には指定する必要はない
-select = "underline" 
+select = "underline"
