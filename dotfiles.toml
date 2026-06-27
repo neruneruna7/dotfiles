@@ -47,7 +47,8 @@ ignore = [
   "dotfiles.toml",
   "README*",
   "LICENSE*",
-  "scripts/**"
+  "scripts/**",
+  ".env.Secrets"
 ]
 
 # 明示リンクである。
