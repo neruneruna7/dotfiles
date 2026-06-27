@@ -1,0 +1,103 @@
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+
+
+[projects."/Users/kino/workspace/install"]
+trust_level = "untrusted"
+
+[projects."/Users/kino/workspace/knowledge/typst_memo"]
+trust_level = "trusted"
+
+[projects."/Users/kino/.codex"]
+trust_level = "untrusted"
+
+[projects."/Users/kino/workspace/work/dotlab/estate-portal"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/work/gururi-app"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/my-dev/my-newtab"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/learn/todos-variant"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/install/bacon-ls"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/lab/re-attack-0806"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/github/my-vit-burn"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/m1/algorithm-st"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/lab/lab-m1-1"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/my-dev/my-typst-cetz-figures"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/lab/lab-m1-1/cocktail_party_attack"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/lab/tex-to-html"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/lab/lab-m1-1/surrogate_model_extension"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/my-dev/smart-tab-collection"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/my-dev/ddd-rust/domains"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/my-dev/ddd-rust"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/my-dev/neru7-anytype-cli"]
+trust_level = "trusted"
+
+[projects."/Users/kino/.config/helix"]
+trust_level = "trusted"
+
+[projects."/Users/kino/dotfiles"]
+trust_level = "trusted"
+
+[notice.model_migrations]
+"gpt-5.2-codex" = "gpt-5.3-codex"
+
+[tui]
+status_line = ["model-with-reasoning", "current-dir", "run-state", "context-remaining"]
+# タイトル更新を止める
+terminal_title = []
+# アニメーションを止める
+animations = false
+
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+
+# MCPサーバーの設定
+[mcp_servers.anytype]
+command = "npx"
+args = ["-y", "@anyproto/anytype-mcp"]
+startup_timeout_sec = 20
+tool_timeout_sec = 60
+enabled = true
+default_tools_approval_mode = "prompt"
+
+# 許可された書き込み場所
+# sccache
+# pnpm cache
+[sandbox_workspace_write]
+writable_roots = [
+  "~/Library/pnpm/store",
+  "~/Library/Caches/Mozilla.sccache",
+  "~/.cache/uv"
+]
