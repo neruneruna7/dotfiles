@@ -101,64 +101,108 @@
       "args": [],
       "projects": [
         {
-          "paths": ["/Users/kino"],
+          "paths": [
+            "/Users/kino"
+          ]
         },
         {
-          "paths": ["/Users/kino/.codex"],
+          "paths": [
+            "/Users/kino/.codex"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/install/mactex"],
+          "paths": [
+            "/Users/kino/workspace/install/mactex"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/knowledge/typst_memo"],
+          "paths": [
+            "/Users/kino/workspace/knowledge/typst_memo"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/learn/Neru7DB"],
+          "paths": [
+            "/Users/kino/workspace/learn/Neru7DB"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/my-dev/ddd-rust"],
+          "paths": [
+            "/Users/kino/workspace/my-dev/ddd-rust"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/my-dev/my-typst-cetz-figures"],
+          "paths": [
+            "/Users/kino/workspace/my-dev/my-typst-cetz-figures"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/my-dev/neru7-anytype-cli"],
+          "paths": [
+            "/Users/kino/workspace/my-dev/neru7-anytype-cli"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/my-dev/smart-tab-collection"],
+          "paths": [
+            "/Users/kino/workspace/my-dev/smart-tab-collection"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/programming/atcoder"],
+          "paths": [
+            "/Users/kino/workspace/programming/atcoder"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/univ/ideaxtech/IdeaxTech_HP"],
+          "paths": [
+            "/Users/kino/workspace/univ/ideaxtech/IdeaxTech_HP"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/univ/lab/lab-m1-1"],
+          "paths": [
+            "/Users/kino/workspace/univ/lab/lab-m1-1"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/univ/lab/lab-m1-1/cifar10-fedsgd"],
+          "paths": [
+            "/Users/kino/workspace/univ/lab/lab-m1-1/cifar10-fedsgd"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/univ/lab/lab-m1-1/nl-sme"],
+          "paths": [
+            "/Users/kino/workspace/univ/lab/lab-m1-1/nl-sme"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/univ/lab/tex-to-html"],
+          "paths": [
+            "/Users/kino/workspace/univ/lab/tex-to-html"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/univ/m1/algorithm-st"],
+          "paths": [
+            "/Users/kino/workspace/univ/m1/algorithm-st"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/work/dotlab/estate-portal"],
+          "paths": [
+            "/Users/kino/workspace/work/dotlab/estate-portal"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/work/gururi-app/./"],
+          "paths": [
+            "/Users/kino/workspace/work/gururi-app/./"
+          ]
         },
         {
-          "paths": ["/Users/kino/workspace/work/gururi/./"],
-        },
-      ],
+          "paths": [
+            "/Users/kino/workspace/work/gururi/./"
+          ]
+        }
+      ]
     },
+    {
+      "host": "mac-mini",
+      "username": "kino",
+      "args": [],
+      "projects": []
+    }
   ],
   "terminal": {
     "shell": {
