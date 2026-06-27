@@ -79,3 +79,8 @@ export DYLD_LIBRARY_PATH="$HOME/.microsandbox/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIB
 
 # zellijのエイリアス
 alias zj='zellij'
+
+
+setopt allexport
+source ~/dotfiles/.env.Secrets
+unsetopt allexport
