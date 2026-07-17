@@ -84,3 +84,8 @@ alias zj='zellij'
 setopt allexport
 source ~/dotfiles/.env.Secrets
 unsetopt allexport
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/kino/.lmstudio/bin"
+# End of LM Studio CLI section
+

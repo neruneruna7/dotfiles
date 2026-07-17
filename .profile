@@ -48,3 +48,8 @@ export DYLD_LIBRARY_PATH="$HOME/.microsandbox/lib${DYLD_LIBRARY_PATH:+:$DYLD_LIB
 
 # leanの管理ツール
 export PATH="$HOME/.elan/bin:$PATH"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/kino/.lmstudio/bin"
+# End of LM Studio CLI section
+
