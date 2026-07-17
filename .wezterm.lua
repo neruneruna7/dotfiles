@@ -97,7 +97,8 @@ local NierColor = {
 
 config.colors = {
     -- 文字色
-    foreground = JisColor.green,
+    -- foreground = JisColor.green,
+    foreground = NierColor.nier_beige_semi_light,
     -- 背景色
     background = NierColor.nier_beige_dark,
     -- 選択中テキストの背景色

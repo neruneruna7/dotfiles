@@ -7,7 +7,16 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "auto_update_extensions": {
+    "typst": false
+  },
   "languages": {
+    "TSX": {
+      "tab_size": 2
+    },
+    "HTML": {
+      "tab_size": 2
+    },
     "JSON": {
       "tab_size": 2
     },
@@ -22,6 +31,7 @@
       "tab_size": 2,
     },
     "JSONC": {
+      "tab_size": 2,
       "show_edit_predictions": true,
     },
   },
@@ -32,12 +42,21 @@
         "arguments": ["lsp"],
       },
       "settings": {
+        "typstExtraArgs": ["--features=html"],
         "exportPdf": "never",
       },
     },
   },
   "cli_default_open_behavior": "existing_window",
-  "agent_servers": {},
+  "agent_servers": {
+    "codex-acp": {
+      "default_config_options": {
+        "mode": "read-only",
+        "fast-mode": false
+      },
+      "type": "registry"
+    }
+  },
   "edit_predictions": {
     "allow_data_collection": "no",
     "codestral": {
@@ -120,12 +139,27 @@
         },
         {
           "paths": [
+            "/Users/kino/workspace/job/access-track"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/knowledge/typst_memo"
           ]
         },
         {
           "paths": [
             "/Users/kino/workspace/learn/Neru7DB"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/learn/cpp"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/my-dev/blog"
           ]
         },
         {
@@ -166,6 +200,11 @@
         {
           "paths": [
             "/Users/kino/workspace/univ/lab/lab-m1-1/cifar10-fedsgd"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/univ/lab/lab-m1-1/mydesk"
           ]
         },
         {
