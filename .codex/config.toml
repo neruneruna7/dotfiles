@@ -1,5 +1,5 @@
-model = "gpt-5.5"
-model_reasoning_effort = "medium"
+model = "gpt-5.6-luna"
+model_reasoning_effort = "xhigh"
 
 
 [projects."/Users/kino/workspace/install"]
@@ -68,8 +68,9 @@ trust_level = "trusted"
 [projects."/Users/kino/dotfiles"]
 trust_level = "trusted"
 
-[notice.model_migrations]
-"gpt-5.2-codex" = "gpt-5.3-codex"
+[projects."/Users/kino/workspace/my-dev/blog"]
+trust_level = "trusted"
+
 
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "run-state", "context-remaining"]
@@ -78,19 +79,23 @@ terminal_title = []
 # アニメーションを止める
 animations = false
 
+[tui.keymap.composer]
+submit = "ctrl-enter"
 
 [tui.model_availability_nux]
 "gpt-5.5" = 4
+"gpt-5.6-sol" = 4
 
 
 # MCPサーバーの設定
-[mcp_servers.anytype]
-command = "npx"
-args = ["-y", "@anyproto/anytype-mcp"]
-startup_timeout_sec = 20
-tool_timeout_sec = 60
-enabled = true
-default_tools_approval_mode = "prompt"
+# [mcp_servers.anytype]
+# command = "npx"
+# args = ["-y", "@anyproto/anytype-mcp"]
+# startup_timeout_sec = 20
+# tool_timeout_sec = 60
+# enabled = true
+# default_tools_approval_mode = "prompt"
+
 
 # 許可された書き込み場所
 # sccache
@@ -101,3 +106,7 @@ writable_roots = [
   "~/Library/Caches/Mozilla.sccache",
   "~/.cache/uv"
 ]
+
+[mcp_servers.serena]
+command = "serena"
+args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]

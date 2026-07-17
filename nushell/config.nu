@@ -1052,21 +1052,21 @@ use memo
 
 # codexのプロファイル切り替え
 # 仕事用
-def codex-work [...rest] {
+def --wrapped codex-work [...rest] {
     with-env { CODEX_HOME: $"($env.HOME)/.codex-work" } {
         ^codex ...$rest
     }
 }
 
 # 個人用
-def codex-personal [...rest] {
+def --wrapped codex-personal [...rest] {
     with-env { CODEX_HOME: $"($env.HOME)/.codex" } {
         ^codex ...$rest
     }
 }
 
 # codex 直叩き: メニューを出して選ばせる
-def codex [...rest] {
+def --wrapped codex [...rest] {
     print "codex はプロファイルを選んで起動します。"
     print "↑↓で選択して Enter。Esc でキャンセル。"
     print ""
