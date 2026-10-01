@@ -1,5 +1,6 @@
-model = "gpt-5.6-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "xhigh"
+service_tier = "fast"
 
 
 [projects."/Users/kino/workspace/install"]
@@ -71,6 +72,12 @@ trust_level = "trusted"
 [projects."/Users/kino/workspace/my-dev/blog"]
 trust_level = "trusted"
 
+[projects."/Users/kino/workspace/personal/typst-editor-mvp"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/titeki-st"]
+trust_level = "trusted"
+
 
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "run-state", "context-remaining"]
@@ -78,6 +85,7 @@ status_line = ["model-with-reasoning", "current-dir", "run-state", "context-rema
 terminal_title = []
 # アニメーションを止める
 animations = false
+screen_reader_detection_done = true
 
 [tui.keymap.composer]
 submit = "ctrl-enter"
@@ -85,6 +93,8 @@ submit = "ctrl-enter"
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
+gpt-6-astra = 2
+"gpt-6.1-sol" = 1
 
 
 # MCPサーバーの設定

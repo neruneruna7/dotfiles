@@ -41,6 +41,13 @@
         "path": "/opt/homebrew/bin/tinymist",
         "arguments": ["lsp"],
       },
+      "initialization_options": {
+        "preview": {
+          "background": {
+            "enabled": true,
+          },
+        },
+      },
       "settings": {
         "typstExtraArgs": ["--features=html"],
         "exportPdf": "never",
@@ -51,7 +58,8 @@
   "agent_servers": {
     "codex-acp": {
       "default_config_options": {
-        "mode": "read-only",
+        "reasoning_effort": "max",
+        "mode": "agent",
         "fast-mode": false
       },
       "type": "registry"
@@ -149,7 +157,22 @@
         },
         {
           "paths": [
+            "/Users/kino/workspace/knowledge/typst_mylib"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/knowledge/typst_mylib/my-bibliography"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/learn/Neru7DB"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/learn/bert-perf"
           ]
         },
         {
@@ -219,7 +242,17 @@
         },
         {
           "paths": [
+            "/Users/kino/workspace/univ/m1/ai-st"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/univ/m1/algorithm-st"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/univ/m1/自然言語処理特論"
           ]
         },
         {
