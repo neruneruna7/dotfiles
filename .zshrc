@@ -10,8 +10,6 @@ eval "$(zoxide init zsh)"
 
 eval "$(atuin init zsh)"
 
-# nodebrewのパスを通す
-export PATH=$HOME/.nodebrew/current/bin:$PATH
 
 eval "$(direnv hook zsh)"
 
@@ -89,3 +87,4 @@ unsetopt allexport
 export PATH="$PATH:/Users/kino/.lmstudio/bin"
 # End of LM Studio CLI section
 
+eval "$(/Users/kino/.local/bin/mise activate zsh)"

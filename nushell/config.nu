@@ -1099,3 +1099,6 @@ def --wrapped codex [...rest] {
 alias zj = zellij
 alias zjl = zellij list-sessions
 alias zja = zellij attach
+
+# miseを利用
+use ($nu.default-config-dir | path join mise.nu)
