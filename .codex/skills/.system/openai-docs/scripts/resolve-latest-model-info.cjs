@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// Keep this entrypoint CommonJS-safe when the skill is copied into a type=module repo.
+
 const fs = require("node:fs/promises");
 const path = require("node:path");
 
@@ -36,15 +38,34 @@ async function readSource(source) {
     return fs.readFile(path.resolve(source), "utf8");
   }
 
-  const response = await fetch(source, {
-    headers: { accept: "text/markdown,text/plain,*/*" },
-  });
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(source, {
+        headers: { accept: "text/markdown,text/plain,*/*" },
+      });
 
-  if (!response.ok) {
-    throw new Error(`failed to fetch ${source}: ${response.status}`);
+      if (response.ok) {
+        // Body failures must be caught by this attempt's retry handler.
+        return await response.text();
+      }
+
+      lastError = new Error(
+        "failed to fetch " + source + ": " + response.status,
+      );
+      if (response.status < 500 && response.status !== 429) {
+        break;
+      }
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (attempt < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 250 * attempt));
+    }
   }
 
-  return response.text();
+  throw lastError;
 }
 
 function parseIndentedInfo(lines, startIndex) {
@@ -83,7 +104,7 @@ function parseFlatInfo(block) {
 function extractLatestModelInfo(markdown) {
   const lines = markdown.split(/\r?\n/);
   const latestModelInfoIndex = lines.findIndex((line) =>
-    /^latestModelInfo:\s*$/.test(line)
+    /^latestModelInfo:\s*$/.test(line),
   );
 
   if (latestModelInfoIndex >= 0) {
@@ -91,17 +112,13 @@ function extractLatestModelInfo(markdown) {
   }
 
   const commentMatch = markdown.match(
-    /<!--\s*latestModelInfo\s*\n([\s\S]*?)\n\s*-->/m
+    /<!--\s*latestModelInfo\s*\n([\s\S]*?)\n\s*-->/m,
   );
   if (commentMatch) {
     return parseFlatInfo(commentMatch[1]);
   }
 
   return undefined;
-}
-
-function modelToSkillSlug(model) {
-  return model.trim().replace(/\./g, "p");
 }
 
 function absoluteUrl(baseUrl, value) {
@@ -115,13 +132,12 @@ function normalizeInfo(info, baseUrl) {
 
   if (!model || !migrationGuide || !promptingGuide) {
     throw new Error(
-      "latestModelInfo must include model, migrationGuide, and promptingGuide"
+      "latestModelInfo must include model, migrationGuide, and promptingGuide",
     );
   }
 
   return {
     model,
-    modelSlug: modelToSkillSlug(model),
     migrationGuideUrl: absoluteUrl(baseUrl, migrationGuide),
     promptingGuideUrl: absoluteUrl(baseUrl, promptingGuide),
   };
@@ -137,7 +153,7 @@ async function main() {
   }
 
   process.stdout.write(
-    `${JSON.stringify(normalizeInfo(info, baseUrl), null, 2)}\n`
+    `${JSON.stringify(normalizeInfo(info, baseUrl), null, 2)}\n`,
   );
 }
 
