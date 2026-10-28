@@ -7,6 +7,10 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "auto_install_extensions": {
+    "tombi": true,
+    "toml": true,
+  },
   "languages": {
     "Rust": {
       "soft_wrap": "none",
@@ -17,6 +21,9 @@
     },
     "TypeScript": {
       "tab_size": 2,
+    },
+    "TOML": {
+      "language_servers": ["tombi"],
     },
     "JSONC": {
       "show_edit_predictions": true,

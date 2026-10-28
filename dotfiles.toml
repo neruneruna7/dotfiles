@@ -1,3 +1,5 @@
+#:schema ./dotfiles.schema.json
+
 # dotfiles.toml
 #
 # このファイルは dotfiles 管理 CLI の設定ファイルである。
@@ -7,6 +9,8 @@
 # 設定ファイル形式のバージョンである。
 # 現在サポートする値は 1 のみである。
 version = 1
+
+
 
 [policy]
 # dotfiles root 配下の相対パスを HOME 配下へ鏡像配置する。

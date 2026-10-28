@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dotfiles configuration",
+  "description": "Schema for dotfiles.toml.",
+  "type": "object",
+  "required": ["version", "policy"],
+  "properties": {
+    "version": {
+      "title": "Configuration version",
+      "description": "Supported dotfiles.toml format version.",
+      "type": "integer",
+      "const": 1,
+      "default": 1
+    },
+    "policy": {
+      "title": "Link policy",
+      "description": "Rules for discovering files and mapping them into the home directory.",
+      "type": "object",
+      "required": ["default_mapping", "link_kind"],
+      "properties": {
+        "default_mapping": {
+          "title": "Default mapping",
+          "description": "Maps each discovered path to the same relative path under HOME.",
+          "type": "string",
+          "enum": ["mirror-home"],
+          "default": "mirror-home"
+        },
+        "link_kind": {
+          "title": "Default link kind",
+          "description": "Link kind used by the default discovery policy.",
+          "type": "string",
+          "enum": ["file", "directory"],
+          "default": "file"
+        },
+        "ignore": {
+          "title": "Ignored paths",
+          "description": "Glob patterns excluded from default file discovery.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "links": {
+      "title": "Explicit links",
+      "description": "Additional links declared as TOML array-of-tables entries.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/link"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "link": {
+      "title": "Explicit link",
+      "type": "object",
+      "required": ["source", "target"],
+      "properties": {
+        "source": {
+          "title": "Source path",
+          "description": "Non-empty relative path under the dotfiles root. Parent path components are not allowed.",
+          "$ref": "#/$defs/sourcePath"
+        },
+        "target": {
+          "title": "Target path",
+          "description": "Non-empty path under HOME or an absolute path. Parent path components are not allowed.",
+          "$ref": "#/$defs/targetPath"
+        },
+        "kind": {
+          "title": "Link kind",
+          "description": "File link by default; directory links must be declared explicitly.",
+          "type": "string",
+          "enum": ["file", "directory"],
+          "default": "file"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sourcePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!\\\\)(?![A-Za-z]:[/\\\\])(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)).+$"
+    },
+    "targetPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!.*(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)).+$"
+    }
+  }
+}
