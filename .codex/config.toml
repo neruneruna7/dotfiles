@@ -78,6 +78,9 @@ trust_level = "trusted"
 [projects."/Users/kino/workspace/univ/titeki-st"]
 trust_level = "trusted"
 
+[projects."/Users/kino/workspace/personal/temp-mullvad"]
+trust_level = "trusted"
+
 
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "run-state", "context-remaining"]
@@ -94,7 +97,7 @@ submit = "ctrl-enter"
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
 gpt-6-astra = 2
-"gpt-6.1-sol" = 1
+"gpt-6.1-sol" = 4
 
 
 # MCPサーバーの設定

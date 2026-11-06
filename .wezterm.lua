@@ -97,10 +97,10 @@ local NierColor = {
 
 config.colors = {
     -- 文字色
-    -- foreground = JisColor.green,
-    foreground = NierColor.nier_beige_semi_light,
+    foreground = JisColor.green,
+    -- foreground = NierColor.nier_beige_semi_light,
     -- 背景色
-    background = NierColor.nier_beige_dark,
+    background = NierColor.nier_beige_semi_dark,
     -- 選択中テキストの背景色
     -- selection_bg = MyColor.termiusSelectBack,
     -- ペイン分割時の境界色
