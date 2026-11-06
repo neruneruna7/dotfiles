@@ -1,7 +1,6 @@
 model = "gpt-6-luna"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "max"
 service_tier = "fast"
-
 
 [projects."/Users/kino/workspace/install"]
 trust_level = "untrusted"
@@ -72,6 +71,12 @@ trust_level = "trusted"
 [projects."/Users/kino/workspace/my-dev/blog"]
 trust_level = "trusted"
 
+[projects."/Users/kino/workspace/learn/bert-perf"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/team/uip"]
+trust_level = "trusted"
+
 [projects."/Users/kino/workspace/personal/typst-editor-mvp"]
 trust_level = "trusted"
 
@@ -96,7 +101,7 @@ submit = "ctrl-enter"
 [tui.model_availability_nux]
 "gpt-5.5" = 4
 "gpt-5.6-sol" = 4
-gpt-6-astra = 2
+gpt-6-astra = 4
 "gpt-6.1-sol" = 4
 
 
@@ -120,6 +125,10 @@ writable_roots = [
   "~/.cache/uv"
 ]
 
-[mcp_servers.serena]
-command = "serena"
-args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
+# [mcp_servers.serena]
+# command = "serena"
+# args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
+
+[mcp_servers.souther]
+command = "souther"
+args = ["mcp"]

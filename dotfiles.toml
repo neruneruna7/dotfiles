@@ -1,3 +1,5 @@
+#:schema ./dotfiles.schema.json
+
 # dotfiles.toml
 #
 # このファイルは dotfiles 管理 CLI の設定ファイルである。
@@ -7,6 +9,8 @@
 # 設定ファイル形式のバージョンである。
 # 現在サポートする値は 1 のみである。
 version = 1
+
+
 
 [policy]
 # dotfiles root 配下の相対パスを HOME 配下へ鏡像配置する。
@@ -42,6 +46,9 @@ ignore = [
   # ディレクトリリンクとして明示管理するため、配下ファイルのデフォルト探索は除外する。
   ".codex/skills/**",
 
+  # 明示リンク設定で管理する Atuin の Nushell 初期化ファイル。
+  ".local/share/atuin/init.nu",
+
   # 既定除外を明示しておく。重複しても挙動は変わらない。
   ".git/**",
   "dotfiles.toml",
@@ -52,7 +59,7 @@ ignore = [
 ]
 
 # 明示リンクである。
-# デフォルトの mirror-home 規則と異なる target に置きたい場合だけ使う。
+# デフォルトの mirror-home 規則と異なる target、または個別に管理する source に使う。
 # source は dotfiles root からの相対パスであり、絶対パスや .. は禁止である。
 # target は HOME からの相対パス、または絶対パスである。
 #
@@ -65,6 +72,11 @@ kind = "directory"
 source = ".codex/skills"
 target = ".codex-work/skills"
 kind = "directory"
+
+[[links]]
+source = ".local/share/atuin/init.nu"
+target = ".local/share/atuin/init.nu"
+kind = "file"
 
 #
 # [[links]]
