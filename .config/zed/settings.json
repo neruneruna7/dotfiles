@@ -11,7 +11,19 @@
     "tombi": true,
     "toml": true,
   },
+  "auto_update_extensions": {
+    "typst": false,
+  },
   "languages": {
+    "TSX": {
+      "tab_size": 2
+    },
+    "HTML": {
+      "tab_size": 2
+    },
+    "JSON": {
+      "tab_size": 2
+    },
     "Rust": {
       "soft_wrap": "none",
       "preferred_line_length": 80,
@@ -20,12 +32,20 @@
       "tab_size": 2,
     },
     "TypeScript": {
+      "inlay_hints": {
+        "show_other_hints": true,
+        "show_parameter_hints": true,
+        "show_value_hints": true,
+        "show_type_hints": true,
+        "enabled": false
+      },
       "tab_size": 2,
     },
     "TOML": {
       "language_servers": ["tombi"],
     },
     "JSONC": {
+      "tab_size": 2,
       "show_edit_predictions": true,
     },
   },
@@ -35,13 +55,30 @@
         "path": "/opt/homebrew/bin/tinymist",
         "arguments": ["lsp"],
       },
+      "initialization_options": {
+        "preview": {
+          "background": {
+            "enabled": true,
+          },
+        },
+      },
       "settings": {
+        "typstExtraArgs": ["--features=html"],
         "exportPdf": "never",
       },
     },
   },
   "cli_default_open_behavior": "existing_window",
-  "agent_servers": {},
+  "agent_servers": {
+    "codex-acp": {
+      "default_config_options": {
+        "reasoning_effort": "max",
+        "mode": "agent",
+        "fast-mode": true
+      },
+      "type": "registry"
+    }
+  },
   "edit_predictions": {
     "allow_data_collection": "no",
     "codestral": {
@@ -77,13 +114,17 @@
   //   "edit_prediction_provider": "copilot",
   // },
   "agent": {
+    "use_modifier_to_send": true,
+    "threads_sidebar": {
+      "position": "right"
+    },
     "inline_assistant_model": {
       "provider": "openai-subscribed",
       "model": "gpt-5.5",
       "enable_thinking": false,
     },
     "default_profile": "write",
-    "sidebar_side": "right",
+    // "sidebar_side": "right",
     "favorite_models": [
       {
         "provider": "copilot_chat",
@@ -94,10 +135,10 @@
     ],
     "dock": "right",
     "default_model": {
-      "effort": "medium",
+      "effort": "max",
       "enable_thinking": true,
       "provider": "openai-subscribed",
-      "model": "gpt-5.5",
+      "model": "gpt-6-luna",
     },
     "model_parameters": [],
   },
@@ -119,7 +160,22 @@
         },
         {
           "paths": [
+            "/Users/kino/dotfiles"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/install/mactex"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/job/access-track"
           ]
         },
         {
@@ -129,7 +185,32 @@
         },
         {
           "paths": [
+            "/Users/kino/workspace/knowledge/typst_mylib"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/knowledge/typst_mylib/my-bibliography"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/learn/Neru7DB"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/learn/bert-perf"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/learn/cpp"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/my-dev/blog"
           ]
         },
         {
@@ -154,12 +235,22 @@
         },
         {
           "paths": [
+            "/Users/kino/workspace/personal/modeling_training"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/programming/atcoder"
           ]
         },
         {
           "paths": [
             "/Users/kino/workspace/univ/ideaxtech/IdeaxTech_HP"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/univ/ideaxtech/reserve-gakusai"
           ]
         },
         {
@@ -174,6 +265,11 @@
         },
         {
           "paths": [
+            "/Users/kino/workspace/univ/lab/lab-m1-1/mydesk"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/univ/lab/lab-m1-1/nl-sme"
           ]
         },
@@ -184,7 +280,17 @@
         },
         {
           "paths": [
+            "/Users/kino/workspace/univ/m1/ai-st"
+          ]
+        },
+        {
+          "paths": [
             "/Users/kino/workspace/univ/m1/algorithm-st"
+          ]
+        },
+        {
+          "paths": [
+            "/Users/kino/workspace/univ/m1/自然言語処理特論"
           ]
         },
         {
@@ -321,6 +427,13 @@
   // カラーユニバーサルデザインからの配色セット
   "theme_overrides": {
     "Ayu Dark": {
+      "text": "#00b06b",
+      "text.muted": "#008f57",
+      "text.placeholder": "#007a4a",
+      "text.disabled": "#005f3a",
+      "text.accent": "#00d982",
+
+      "editor.foreground": "#00b06b",
       "editor.background": "#1e1e1e",
 
       "error": "#f2e700",

@@ -77,6 +77,15 @@ trust_level = "trusted"
 [projects."/Users/kino/workspace/univ/team/uip"]
 trust_level = "trusted"
 
+[projects."/Users/kino/workspace/personal/typst-editor-mvp"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/univ/titeki-st"]
+trust_level = "trusted"
+
+[projects."/Users/kino/workspace/personal/temp-mullvad"]
+trust_level = "trusted"
+
 
 [tui]
 status_line = ["model-with-reasoning", "current-dir", "run-state", "context-remaining"]
