@@ -116,6 +116,10 @@ writable_roots = [
   "~/.cache/uv"
 ]
 
-[mcp_servers.serena]
-command = "serena"
-args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
+# [mcp_servers.serena]
+# command = "serena"
+# args = ["start-mcp-server", "--context=codex", "--project-from-cwd"]
+
+[mcp_servers.souther]
+command = "souther"
+args = ["mcp"]
